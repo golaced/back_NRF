@@ -1333,12 +1333,14 @@ SD_Error CmdResp1Error(u8 cmd)
 //检查R3响应的错误状态
 //返回值:错误状态
 SD_Error CmdResp3Error(void)
-{
+{ static u16 cnt;
 	u32 status;						 
  	while(1)
 	{
 		status=SDIO->STA;
 		if(status&((1<<0)|(1<<2)|(1<<6)))break;//CRC错误/命令响应超时/已经收到响应(CRC校验成功)	
+		cnt++;
+		//if(cnt>200){cnt=0;break;}--------------------------------------------------------------
 	}
  	if(SDIO_GetFlagStatus(SDIO_FLAG_CTIMEOUT) != RESET)					//响应超时
 	{											 

@@ -166,7 +166,7 @@ for (k=0;k<20;k++)
 { 
 										 
 	sprintf(file_name,"0:/DATA_OUT/ODS_%d",index);
-   res=f_mkdir(file_name);//!=FR_EXIST);		//创建PHOTO文件夹
+  res=f_mkdir(file_name);//!=FR_EXIST);		//创建PHOTO文件夹
  	for (k=0;k<20;k++)
 	file_name[k]=0;
 	
@@ -249,7 +249,7 @@ static u16 index=0;
 float ch[25]={0};
 float halfT;
 static float test_data[9];
-u8 delta_t;
+u16 delta_t;
 static u32 t_now;
  nowr = micros();  //读取时间
   if(nowr<lastUpdater){ //定时器溢出过了。
@@ -265,24 +265,17 @@ switch (state)
 {
 	case 0:
 	if(en_save)
-  {//state=1;		
-			index=creat_floder();
+  {		
+		index=creat_floder();
 	  t_now=0;
-	  state=2;
+	  state=1;
 	}
 	break;
 	case 1:
-		index=creat_floder();
-	  t_now=0;
-	  state=2;
-	break;
-	case 2:
 	if(!en_save)
   {	init_sd_write=0;t_now=0;state=0;}
 	else
 	{u8 cnt_;
-		 if(en_save)
-		;//GPIO_SetBits(GPIOE,GPIO_Pin_0 | GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3);//GPIOF9,F10设置高，灯灭
 	 cnt_=0;	
 	
 

@@ -136,30 +136,24 @@ SBUS_MIN_A=(vs16)(FLASH_READ_BUF[13]<<8|FLASH_READ_BUF[12]);
 SBUS_MAX_A=(vs16)(FLASH_READ_BUF[15]<<8|FLASH_READ_BUF[14]);
 SBUS_MID_A=(vs16)(FLASH_READ_BUF[17]<<8|FLASH_READ_BUF[16]);
 //	
-//ak8975.Mag_Gain.x =(float)((vs16)((FLASH_READ_BUF[19]<<8|FLASH_READ_BUF[18])))/100.;
-//ak8975.Mag_Gain.y=(float)((vs16)((FLASH_READ_BUF[21]<<8|FLASH_READ_BUF[20])))/100.;
-//ak8975.Mag_Gain.z =(float)((vs16)((FLASH_READ_BUF[23]<<8|FLASH_READ_BUF[22])))/100.;
-//	
-//dj_angle_offset[0] =(float)((vs16)((FLASH_READ_BUF[25]<<8|FLASH_READ_BUF[24])))/100.;
-//dj_angle_offset[1] =(float)((vs16)((FLASH_READ_BUF[27]<<8|FLASH_READ_BUF[26])))/100.;
-//dj_angle_offset[2] =(float)((vs16)((FLASH_READ_BUF[29]<<8|FLASH_READ_BUF[28])))/100.;
-pwmin.T =	 ((vs16)((FLASH_READ_BUF[25]<<8|FLASH_READ_BUF[24])));
-pwmin.min =((vs16)((FLASH_READ_BUF[27]<<8|FLASH_READ_BUF[26])));
-pwmin.max =((vs16)((FLASH_READ_BUF[29]<<8|FLASH_READ_BUF[28])));
 
-home_point[0]=(double)((vs32)((FLASH_READ_BUF[30]<<24|FLASH_READ_BUF[31]<<16)|(FLASH_READ_BUF[32]<<8|FLASH_READ_BUF[33])))/10000000.;
-home_point[1]=(double)((vs32)((FLASH_READ_BUF[34]<<24|FLASH_READ_BUF[35]<<16)|(FLASH_READ_BUF[36]<<8|FLASH_READ_BUF[37])))/10000000.;
+//pwmin.T =	 ((vs16)((FLASH_READ_BUF[25]<<8|FLASH_READ_BUF[24])));
+//pwmin.min =((vs16)((FLASH_READ_BUF[27]<<8|FLASH_READ_BUF[26])));
+//pwmin.max =((vs16)((FLASH_READ_BUF[29]<<8|FLASH_READ_BUF[28])));
 
-check_way_point[0]=(double)((vs32)((FLASH_READ_BUF[38]<<24|FLASH_READ_BUF[39]<<16)|(FLASH_READ_BUF[40]<<8|FLASH_READ_BUF[41])))/10000000.;
-check_way_point[1]=(double)((vs32)((FLASH_READ_BUF[42]<<24|FLASH_READ_BUF[43]<<16)|(FLASH_READ_BUF[44]<<8|FLASH_READ_BUF[45])))/10000000.;
+//home_point[0]=(double)((vs32)((FLASH_READ_BUF[30]<<24|FLASH_READ_BUF[31]<<16)|(FLASH_READ_BUF[32]<<8|FLASH_READ_BUF[33])))/10000000.;
+//home_point[1]=(double)((vs32)((FLASH_READ_BUF[34]<<24|FLASH_READ_BUF[35]<<16)|(FLASH_READ_BUF[36]<<8|FLASH_READ_BUF[37])))/10000000.;
 
-way_point[0][0]=(double)((vs32)((FLASH_READ_BUF[46]<<24|FLASH_READ_BUF[47]<<16)|(FLASH_READ_BUF[48]<<8|FLASH_READ_BUF[49])))/10000000.;
-way_point[0][1]=(double)((vs32)((FLASH_READ_BUF[50]<<24|FLASH_READ_BUF[51]<<16)|(FLASH_READ_BUF[52]<<8|FLASH_READ_BUF[53])))/10000000.;
+//check_way_point[0]=(double)((vs32)((FLASH_READ_BUF[38]<<24|FLASH_READ_BUF[39]<<16)|(FLASH_READ_BUF[40]<<8|FLASH_READ_BUF[41])))/10000000.;
+//check_way_point[1]=(double)((vs32)((FLASH_READ_BUF[42]<<24|FLASH_READ_BUF[43]<<16)|(FLASH_READ_BUF[44]<<8|FLASH_READ_BUF[45])))/10000000.;
 
-way_point[1][0]=(double)((vs32)((FLASH_READ_BUF[54]<<24|FLASH_READ_BUF[55]<<16)|(FLASH_READ_BUF[56]<<8|FLASH_READ_BUF[57])))/10000000.;
-way_point[1][1]=(double)((vs32)((FLASH_READ_BUF[58]<<24|FLASH_READ_BUF[59]<<16)|(FLASH_READ_BUF[60]<<8|FLASH_READ_BUF[61])))/10000000.;
+//way_point[0][0]=(double)((vs32)((FLASH_READ_BUF[46]<<24|FLASH_READ_BUF[47]<<16)|(FLASH_READ_BUF[48]<<8|FLASH_READ_BUF[49])))/10000000.;
+//way_point[0][1]=(double)((vs32)((FLASH_READ_BUF[50]<<24|FLASH_READ_BUF[51]<<16)|(FLASH_READ_BUF[52]<<8|FLASH_READ_BUF[53])))/10000000.;
 
-Yaw_set_dji=(float)((vs16)((FLASH_READ_BUF[62]<<8|FLASH_READ_BUF[63])))/10.;
+//way_point[1][0]=(double)((vs32)((FLASH_READ_BUF[54]<<24|FLASH_READ_BUF[55]<<16)|(FLASH_READ_BUF[56]<<8|FLASH_READ_BUF[57])))/10000000.;
+//way_point[1][1]=(double)((vs32)((FLASH_READ_BUF[58]<<24|FLASH_READ_BUF[59]<<16)|(FLASH_READ_BUF[60]<<8|FLASH_READ_BUF[61])))/10000000.;
+
+//Yaw_set_dji=(float)((vs16)((FLASH_READ_BUF[62]<<8|FLASH_READ_BUF[63])))/10.;
 }
 
 void WRITE_PARM(void)
@@ -227,60 +221,60 @@ FLASH_Buffer[cnt++]=BYTE1(_temp);
 //_temp=(int16_t)(pwmin.max);
 //FLASH_Buffer[cnt++]=BYTE0(_temp);
 //FLASH_Buffer[cnt++]=BYTE1(_temp);
-//home
-_temp32=(home_point[0]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
+////home
+//_temp32=(home_point[0]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
 
-_temp32=(home_point[1]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
-//check
-_temp32=(check_way_point[0]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
+//_temp32=(home_point[1]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
+////check
+//_temp32=(check_way_point[0]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
 
-_temp32=(check_way_point[1]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
+//_temp32=(check_way_point[1]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
 
-//0
-_temp32=(way_point[0][0]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
+////0
+//_temp32=(way_point[0][0]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
 
-_temp32=(way_point[0][1]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
+//_temp32=(way_point[0][1]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
 
-//1
-_temp32=(way_point[1][0]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
+////1
+//_temp32=(way_point[1][0]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
 
-_temp32=(way_point[1][1]*10000000);
-FLASH_Buffer[cnt++]=BYTE3(_temp32);
-FLASH_Buffer[cnt++]=BYTE2(_temp32);
-FLASH_Buffer[cnt++]=BYTE1(_temp32);
-FLASH_Buffer[cnt++]=BYTE0(_temp32);
+//_temp32=(way_point[1][1]*10000000);
+//FLASH_Buffer[cnt++]=BYTE3(_temp32);
+//FLASH_Buffer[cnt++]=BYTE2(_temp32);
+//FLASH_Buffer[cnt++]=BYTE1(_temp32);
+//FLASH_Buffer[cnt++]=BYTE0(_temp32);
 
-_temp=(int16_t)(Yaw_set_dji*10);
-FLASH_Buffer[cnt++]=BYTE1(_temp);
-FLASH_Buffer[cnt++]=BYTE0(_temp);
+//_temp=(int16_t)(Yaw_set_dji*10);
+//FLASH_Buffer[cnt++]=BYTE1(_temp);
+//FLASH_Buffer[cnt++]=BYTE0(_temp);
 STMFLASH_Write(FLASH_SAVE_ADDR,(u32*)FLASH_Buffer,SIZE);
 
 }

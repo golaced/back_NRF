@@ -2,7 +2,7 @@
 #include "circle.h"
 #include "usart.h"
 
-
+M100 m100;
 void m100_rst(u16 delay)
 {
 UsartSend_M100(0xFA);

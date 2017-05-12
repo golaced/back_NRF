@@ -1,32 +1,6 @@
 #include "include.h"
 #include "filter.h"
 #include "my_math.h"
-// #define WIDTH_NUM 101
-// #define FIL_ITEM  10
-
- void Moving_Average(float in,float moavarray[],u16 len ,u16 fil_cnt[2],float *out)
-{
-	u16 width_num;
-	
-	width_num = len ;
-	
-	if( ++fil_cnt[0] > width_num )	
-	{
-		fil_cnt[0] = 0; //now
-		fil_cnt[1] = 1; //old
-	}
-	else
-	{
-		fil_cnt[1] = (fil_cnt[0] == width_num)? 0 : (fil_cnt[0] + 1);
-	}
-	
-	moavarray[ fil_cnt[0] ] = in;
-	*out += ( in - ( moavarray[ fil_cnt[1] ]  ) )/(float)( width_num ) ;
-	
-}
-
-
-
 #define MED_WIDTH_NUM 20
 #define MED_FIL_ITEM  30
 

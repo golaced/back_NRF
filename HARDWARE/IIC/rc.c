@@ -213,69 +213,7 @@ u8 height_ctrl_mode = 0,height_ctrl_mode_use;
 extern u8 ultra_ok;
 void Mode_FC(void)
 {static u8 last_height_ctrl_mode;
-	if(1){
-	if( !fly_ready)// || CH_filter[THR]<-400 ) //只在上锁时 以及 油门 低于10% 的时候，允许切换模式，否则只能向模式0切换。
-	{
-		if( RX_CH[AUX4r] < 100 )
-		{
-			height_ctrl_mode = 0;
-		}
-		else if(RX_CH[AUX4r] >800  )
-		{
-			height_ctrl_mode = 1;//气压计
-		}
-		else
-		{
-			if(ultra_ok == 1)
-			{
-				height_ctrl_mode = 2;//超声波
-			}
-			else
-			{
-				height_ctrl_mode = 1;
-			}
-		}
-	}
-	else
-	{
-		
-		
-		if( RX_CH[AUX4r] < 100 )
-		{
-			height_ctrl_mode = 0;
-		}
-		else if(RX_CH[AUX4r] >800  )
-		{
-			height_ctrl_mode = 1;//气压计
-		}
-		else
-		{
-			if(ultra_ok == 1)
-			{
-				height_ctrl_mode = 2;//超声波
-			}
-			else
-			{
-				height_ctrl_mode = 1;
-			}
-		}
-	}
-}
-	else
-	{
 	
-	if( RX_CH[AUX4r] < 100 )
-		{
-			height_ctrl_mode = 0;
-		}
-		else if(RX_CH[AUX4r] >800  )
-		{
-			height_ctrl_mode = 1;//气压计
-		}
-	}
-	
-	
-//	last_height_ctrl_mode=height_ctrl_mode;
 }
 
 

@@ -35,7 +35,6 @@ void Usart2_Init(u32 br_num)//--GOL-link
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);	
-
 	
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_USART2);
   GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_USART2);
@@ -54,8 +53,6 @@ void Usart2_Init(u32 br_num)//--GOL-link
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-	
    //USART1 初始化设置
 	USART_InitStructure.USART_BaudRate = br_num;//波特率设置
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//字长为8位数据格式
@@ -68,38 +65,20 @@ void Usart2_Init(u32 br_num)//--GOL-link
   USART_Cmd(USART2, ENABLE);  //使能串口1 
 	
 	USART_ClearFlag(USART2, USART_FLAG_TC);
-	
 
 	//使能USART2接收中断
 	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
 	//使能USART2
 	USART_Cmd(USART2, ENABLE); 
-//	//使能发送（进入移位）中断
-//	if(!(USART2->CR1 & USART_CR1_TXEIE))
-//	{
-//		USART_ITConfig(USART2, USART_IT_TXE, ENABLE); 
-//	}
-
-
 }
-RESULT color;
-float dt_flow_rx;
-u16 data_rate_gol_link;
-PID_STA HPID,SPID,FIX_PID,NAV_PID;
-struct _PID_SET pid;
+
 RC_GETDATA Rc_Get,Rc_Get_PPM,Rc_Get_SBUS;
 struct _plane plane;
 struct _slam slam;
 struct _IMU_NAV imu_nav;
 struct _MODE mode;
-u8 LOCK, KEY[8],KEY_SEL[4];
+u8  KEY[8],KEY_SEL[4];
 
-u8 NAV_BOARD_CONNECT=0;
-u8 SONAR_HEAD_CHECK[2];
-u32 imu_loss_cnt;
-u16 S_head;
-float Pitch_DJ,Roll_DJ;
-float ALT_POS_SONAR_HEAD,ALT_POS_SONAR_HEAD_LASER_SCANER;
  void Data_IMU(u8 *data_buf,u8 num)
 {
 	vs16 rc_value_temp;
@@ -111,102 +90,9 @@ float ALT_POS_SONAR_HEAD,ALT_POS_SONAR_HEAD_LASER_SCANER;
 	if(!(*(data_buf)==0xAA && *(data_buf+1)==0xAF))		return;		//判断帧头
   if(*(data_buf+2)==0x01)//FLOW_MINE_frame
   {
-	  imu_loss_cnt=0;
-    NAV_BOARD_CONNECT=1;
-		imu_nav.flow.rate=*(data_buf+4);
-		imu_nav.flow.speed.y_f=(float)((int16_t)((*(data_buf+5)<<8)|*(data_buf+6)))/1000.;
-		imu_nav.flow.speed.x_f=(float)((int16_t)((*(data_buf+7)<<8)|*(data_buf+8)))/1000.;
-		imu_nav.flow.speed.y = (float)(int16_t)((*(data_buf+9)<<8)|*(data_buf+10))/1000.;
-		imu_nav.flow.speed.x = (float)(int16_t)((*(data_buf+11)<<8)|*(data_buf+12))/1000.;
-		now_position[LON]=(float)(int16_t)((*(data_buf+13)<<8)|*(data_buf+14))/100.;//m
-		now_position[LAT]=(float)(int16_t)((*(data_buf+15)<<8)|*(data_buf+16))/100.;//m
-		//ALT_VEL_SONAR=(float)(int16_t)((*(data_buf+17)<<8)|*(data_buf+18))/1000.;//m
-		float temp=(float)(int16_t)((*(data_buf+19)<<8)|*(data_buf+20))/1000.;//m
-			if(temp<8.888)
-	  ALT_POS_SONAR_HEAD = temp;
-		SONAR_HEAD_CHECK[0]=*(data_buf+4);
-    S_head=(float)(int16_t)((*(data_buf+33)<<8)|*(data_buf+34));
-			
-		//ALT_VEL_BMP=(float)(int16_t)((*(data_buf+21)<<8)|*(data_buf+22))/1000.;//m
-		//ALT_POS_BMP=(float)(int32_t)((*(data_buf+23)<<24)|(*(data_buf+24)<<16)|(*(data_buf+25)<<8)|*(data_buf+26))/1000.;//m
-		
 	}		
- 	/* else if(*(data_buf+2)==0x12)//debug
-  {
-	flow_debug.en_ble_debug= *(data_buf+4);	
-	flow_debug.ax=((int16_t)(*(data_buf+5)<<8)|*(data_buf+6));
-	flow_debug.ay=((int16_t)(*(data_buf+7)<<8)|*(data_buf+8));
-	flow_debug.az=((int16_t)(*(data_buf+9)<<8)|*(data_buf+10));
-	flow_debug.gx=((int16_t)(*(data_buf+11)<<8)|*(data_buf+12));
-	flow_debug.gy=((int16_t)(*(data_buf+13)<<8)|*(data_buf+14));
-	flow_debug.gz=((int16_t)(*(data_buf+15)<<8)|*(data_buf+16));
-	flow_debug.hx=((int16_t)(*(data_buf+17)<<8)|*(data_buf+18));
-	flow_debug.hy=((int16_t)(*(data_buf+19)<<8)|*(data_buf+20));
-  flow_debug.hz=((int16_t)(*(data_buf+21)<<8)|*(data_buf+22));
-
-	}		
-	else if(*(data_buf+2)==0x02)//CAL
-  {
-	  mpu6050.Acc_Offset.x=(int16_t)(*(data_buf+4)<<8)|*(data_buf+5);
-    mpu6050.Acc_Offset.y=(int16_t)(*(data_buf+6)<<8)|*(data_buf+7);
-		mpu6050.Acc_Offset.z=(int16_t)(*(data_buf+8)<<8)|*(data_buf+9);
-		mpu6050.Gyro_Offset.x=(int16_t)(*(data_buf+10)<<8)|*(data_buf+11);
-		mpu6050.Gyro_Offset.y=(int16_t)(*(data_buf+12)<<8)|*(data_buf+13);
-		mpu6050.Gyro_Offset.z=(int16_t)(*(data_buf+14)<<8)|*(data_buf+15);
-		ak8975.Mag_Offset.x=(int16_t)(*(data_buf+16)<<8)|*(data_buf+17);
-		ak8975.Mag_Offset.y=(int16_t)(*(data_buf+18)<<8)|*(data_buf+19);
-		ak8975.Mag_Offset.z=(int16_t)(*(data_buf+20)<<8)|*(data_buf+21);
-		ak8975.Mag_Gain.x=(float)((int16_t)(*(data_buf+22)<<8)|*(data_buf+23))/1000.;
-		ak8975.Mag_Gain.y=(float)((int16_t)(*(data_buf+24)<<8)|*(data_buf+25))/1000.;
-		ak8975.Mag_Gain.z=(float)((int16_t)(*(data_buf+26)<<8)|*(data_buf+27))/1000.;
-	}		
-else if(*(data_buf+2)==0x10)//Mems
-  {
-	  mpu6050.Acc.x=(int16_t)(*(data_buf+4)<<8)|*(data_buf+5);
-    mpu6050.Acc.y=(int16_t)(*(data_buf+6)<<8)|*(data_buf+7);
-		mpu6050.Acc.z=(int16_t)(*(data_buf+8)<<8)|*(data_buf+9);
-		mpu6050.Gyro.x=(int16_t)(*(data_buf+10)<<8)|*(data_buf+11);
-		mpu6050.Gyro.y=(int16_t)(*(data_buf+12)<<8)|*(data_buf+13);
-		mpu6050.Gyro.z=(int16_t)(*(data_buf+14)<<8)|*(data_buf+15);
-		mpu6050.Gyro_deg.x = mpu6050.Gyro.x *TO_ANGLE;
-		mpu6050.Gyro_deg.y = mpu6050.Gyro.y *TO_ANGLE;
-		mpu6050.Gyro_deg.z = mpu6050.Gyro.z *TO_ANGLE;
-		ak8975.Mag_Val.x=(int16_t)(*(data_buf+16)<<8)|*(data_buf+17);
-		ak8975.Mag_Val.y=(int16_t)(*(data_buf+18)<<8)|*(data_buf+19);
-		ak8975.Mag_Val.z=(int16_t)(*(data_buf+20)<<8)|*(data_buf+21);
-		int temp=(int16_t)(*(data_buf+22)<<8)|*(data_buf+23);
-		if(temp<3200)
-	  ultra_distance = temp;
-	  baroAlt=(int32_t)((*(data_buf+24)<<24)|(*(data_buf+25)<<16)|(*(data_buf+26)<<8)|*(data_buf+27));
-	}	*/	
 	else if(*(data_buf+2)==0x11)//Att
-  { //dt_flow_rx= Get_Cycle_T(GET_T_FLOW_UART);	
-	  Pitch=(float)((int16_t)(*(data_buf+4)<<8)|*(data_buf+5))/10.;
-    Roll=(float)((int16_t)(*(data_buf+6)<<8)|*(data_buf+7))/10.;
-		Yaw=(float)((int16_t)(*(data_buf+8)<<8)|*(data_buf+9))/10.;
-		q_nav[0]=(float)((int16_t)(*(data_buf+10)<<8)|*(data_buf+11))/1000.;
-		q_nav[1]=(float)((int16_t)(*(data_buf+12)<<8)|*(data_buf+13))/1000.;
-		q_nav[2]=(float)((int16_t)(*(data_buf+14)<<8)|*(data_buf+15))/1000.;
-		q_nav[3]=(float)((int16_t)(*(data_buf+16)<<8)|*(data_buf+17))/1000.;
-		Pitch_DJ=(float)((int16_t)(*(data_buf+18)<<8)|*(data_buf+19))/10.;
-    Roll_DJ= (float)((int16_t)(*(data_buf+20)<<8)|*(data_buf+21))/10.;
-		//Pitch_mid_down=(float)((int16_t)(*(data_buf+18)<<8)|*(data_buf+19))/10.;
-    //Roll_mid_down=(float)((int16_t)(*(data_buf+20)<<8)|*(data_buf+21))/10.;
-		//Yaw_mid_down=(float)((int16_t)(*(data_buf+22)<<8)|*(data_buf+23))/10.;
-		//ref_q_imd_down[0]=(float)((int16_t)(*(data_buf+24)<<8)|*(data_buf+25))/1000.;
-		//ref_q_imd_down[1]=(float)((int16_t)(*(data_buf+26)<<8)|*(data_buf+27))/1000.;
-		//ref_q_imd_down[2]=(float)((int16_t)(*(data_buf+28)<<8)|*(data_buf+29))/1000.;
-		//ref_q_imd_down[3]=(float)((int16_t)(*(data_buf+30)<<8)|*(data_buf+31))/1000.;
-		ALT_VEL_BMP_EKF=(float)(int16_t)((*(data_buf+32)<<8)|*(data_buf+33))/1000.;//m
-		
-		
-  	//reference_vr[0]=reference_v.x = 2*(q_nav[1]*q_nav[3] - q_nav[0]*q_nav[2]);
-  	//reference_vr[1]=reference_v.y = 2*(q_nav[0]*q_nav[1] + q_nav[2]*q_nav[3]);
-	  //reference_vr[2]=reference_v.z = 1 - 2*(q_nav[1]*q_nav[1] + q_nav[2]*q_nav[2]);
-	  //reference_vr_imd_down[0] = 2*(ref_q_imd_down[1]*ref_q_imd_down[3] - ref_q_imd_down[0]*ref_q_imd_down[2]);
-	  //reference_vr_imd_down[1] = 2*(ref_q_imd_down[0]*ref_q_imd_down[1] + ref_q_imd_down[2]*ref_q_imd_down[3]);
-	  //reference_vr_imd_down[2] = 1 - 2*(ref_q_imd_down[1]*ref_q_imd_down[1] + ref_q_imd_down[2]*ref_q_imd_down[2]);
-	
+  { 
 	}		
 }
 u8 laser_sel=1;
@@ -285,13 +171,9 @@ void USART2_IRQHandler(void)
 		{
 			USART2->CR1 &= ~USART_CR1_TXEIE;		//关闭TXE（发送中断）中断
 		}
-
-
-		//USART_ClearITPendingBit(USART2,USART_IT_TXE);
 	}
 
    OSIntExit(); 
-
 }
 
 
@@ -370,13 +252,6 @@ void Usart1_Init(u32 br_num)//-------UPload_board1
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 	//使能USART2
 	USART_Cmd(USART1, ENABLE); 
-//	//使能发送（进入移位）中断
-//	if(!(USART2->CR1 & USART_CR1_TXEIE))
-//	{
-//		USART_ITConfig(USART2, USART_IT_TXE, ENABLE); 
-//	}
-
-
 }
 
 
@@ -531,7 +406,7 @@ int16_t BLE_DEBUG[16];
 			else if(*(data_buf+2)==0x04)								//飞控模式
 	{
 	
-			//en_save = *(data_buf+4);//sd_使能存储		
+			en_save = *(data_buf+4);//sd_使能存储		
 	}
 			else if(*(data_buf+2)==0x06)								//飞控使用光流数据
 	{
@@ -549,19 +424,9 @@ int16_t BLE_DEBUG[16];
 	}
 				else if(*(data_buf+2)==0x07)								//飞控使用光流数据
 	{
-			SPID.OP= ((vs16)(*(data_buf+4)<<8)|*(data_buf+5));
-			SPID.OI= ((vs16)(*(data_buf+6)<<8)|*(data_buf+7));
-			SPID.OD= ((vs16)(*(data_buf+8)<<8)|*(data_buf+9));
-			SPID.IP= ((vs16)(*(data_buf+10)<<8)|*(data_buf+11));
-			SPID.II= ((vs16)(*(data_buf+12)<<8)|*(data_buf+13));
-			SPID.ID= ((vs16)(*(data_buf+14)<<8)|*(data_buf+15));
-			SPID.YP= ((vs16)(*(data_buf+16)<<8)|*(data_buf+17));
-			SPID.YI= ((vs16)(*(data_buf+18)<<8)|*(data_buf+19));
-			SPID.YD= ((vs16)(*(data_buf+20)<<8)|*(data_buf+21));
-			HPID.OP= ((vs16)(*(data_buf+22)<<8)|*(data_buf+23));
-			HPID.OI= ((vs16)(*(data_buf+24)<<8)|*(data_buf+25));
-			HPID.OD= ((vs16)(*(data_buf+26)<<8)|*(data_buf+27));
-		
+			
+		  mode.en_sd_save= *(data_buf+28);
+		  sd.en_save= mode.en_sd_save;
 	}
 				else if(*(data_buf+2)==0x08)								//飞控使用GPS数据
 	{
@@ -581,17 +446,6 @@ int16_t BLE_DEBUG[16];
 	BLE_DEBUG[13]=((vs16)(*(data_buf+30)<<8)|*(data_buf+31));
 	BLE_DEBUG[14]=((vs16)(*(data_buf+32)<<8)|*(data_buf+33));
 	BLE_DEBUG[15]=((vs16)(*(data_buf+34)<<8)|*(data_buf+35));		
-		
-	/*
-	fly_controller.gps.J = 			  ((long)(*(data_buf+4)<<24)|(*(data_buf+5)<<16)|(*(data_buf+6)<<8)|*(data_buf+7));//W
-	fly_controller.gps.W = 			  ((long)(*(data_buf+8)<<24)|(*(data_buf+9)<<16)|(*(data_buf+10)<<8)|*(data_buf+11));//J
-	fly_controller.gps.gps_mode =  *(data_buf+12);//W
-	fly_controller.gps.star_num =  *(data_buf+13);//J
-	fly_controller.gps.X_O = 			((long)(*(data_buf+14)<<24)|(*(data_buf+15)<<16)|(*(data_buf+16)<<8)|*(data_buf+17));//W
-	fly_controller.gps.Y_O = 			((long)(*(data_buf+18)<<24)|(*(data_buf+19)<<16)|(*(data_buf+20)<<8)|*(data_buf+21));//J
-	fly_controller.gps.X_UKF = 		((long)(*(data_buf+22)<<24)|(*(data_buf+23)<<16)|(*(data_buf+24)<<8)|*(data_buf+25));//W
-	fly_controller.gps.Y_UKF = 		((long)(*(data_buf+26)<<24)|(*(data_buf+27)<<16)|(*(data_buf+28)<<8)|*(data_buf+29));//J
-		*/
 	}
 				else if(*(data_buf+2)==0x09)								//飞控使用光流数据
 	{
@@ -613,17 +467,6 @@ int16_t BLE_DEBUG[16];
 		   mark[1][3]= *(data_buf+29);
 		   mark[2][3]= *(data_buf+30);
 		   mark[3][3]= *(data_buf+31);
-//		   mark[0][0]= ((vs16)(*(data_buf+28)<<8)|*(data_buf+29));
-//			 baro_matlab_data[1]= ((vs16)(*(data_buf+30)<<8)|*(data_buf+31));
-//		   qr_matlab_data[0]= *(data_buf+32);
-//			 qr_matlab_data[1]= ((vs16)(*(data_buf+33)<<8)|*(data_buf+34));
-//			 qr_matlab_data[2]= ((vs16)(*(data_buf+35)<<8)|*(data_buf+36));
-//			 qr_matlab_data[3]= ((vs16)(*(data_buf+35)<<8)|*(data_buf+36));
-//			 qr_matlab_data_att[0]= ((vs16)(*(data_buf+37)<<8)|*(data_buf+38));
-//			 qr_matlab_data_att[1]= ((vs16)(*(data_buf+39)<<8)|*(data_buf+40));
-//			 qr_matlab_data_att[2]= ((vs16)(*(data_buf+41)<<8)|*(data_buf+42));
-//       k_scale_pix= ((vs16)(*(data_buf+43)<<8)|*(data_buf+44));
-		
 	}
 	//---------------------------------------------------------------------
 	else if(*(data_buf+2)==0x71)								//判断功能字0x81 飞控Sensor数据
@@ -810,7 +653,6 @@ void USART1_IRQHandler(void)
 		else
 			RxState4 = 0;
 		
-		
 	}
 	//发送（进入移位）中断
 	if( USART_GetITStatus(USART1,USART_IT_TXE ) )
@@ -821,9 +663,6 @@ void USART1_IRQHandler(void)
 		{
 			USART1->CR1 &= ~USART_CR1_TXEIE;		//关闭TXE（发送中断）中断
 		}
-
-
-		//USART_ClearITPendingBit(USART2,USART_IT_TXE);
 	}
   
    OSIntExit(); 
@@ -1058,55 +897,7 @@ switch(sel){
 	SendBuff1[nrf_uart_cnt++]=0xAF;
 	SendBuff1[nrf_uart_cnt++]=0x02;//功能字
 	SendBuff1[nrf_uart_cnt++]=0;//数据量
-	_temp=SPID.OP;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-  _temp=SPID.OI;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=SPID.OD;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
 	
-	_temp=SPID.IP;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=SPID.II;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=SPID.ID;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	
-	_temp=SPID.YP;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=SPID.YI;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=SPID.YD;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	
-	_temp=HPID.OP;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=HPID.OI;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=HPID.OD;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	
-	_temp=HPID.IP;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=HPID.II;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	_temp=HPID.ID;
-	SendBuff1[nrf_uart_cnt++]=BYTE1(_temp);
-	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
 	
 	SendBuff1[cnt_reg+3] =(nrf_uart_cnt-cnt_reg)-4;
 		for( i=cnt_reg;i<nrf_uart_cnt;i++)
@@ -1194,8 +985,6 @@ SendBuff1[i]=0;
  nrf_uart_cnt=0;
 }
 
-
-
 void Usart3_Init(u32 br_num)//-------SBUS
 {
 	USART_InitTypeDef USART_InitStructure;
@@ -1213,7 +1002,6 @@ void Usart3_Init(u32 br_num)//-------SBUS
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);	
 
-	
 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART3);
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART3);
 	
@@ -1222,17 +1010,15 @@ void Usart3_Init(u32 br_num)//-------SBUS
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN ;
   GPIO_Init(GPIOB, &GPIO_InitStructure); 
 	//配置PD6作为USART2　Rx
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 ; 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
   GPIO_Init(GPIOB, &GPIO_InitStructure); 
-	
-	
 	
    //USART1 初始化设置
 	USART_InitStructure.USART_BaudRate = br_num;//波特率设置
@@ -1266,6 +1052,13 @@ void USART3_IRQHandler(void)
 	if(USART3->SR & USART_SR_ORE)//ORE中断
 	{
 		com_data = USART3->DR;
+		Rc_Get_SBUS.lose_cnt=0;
+		Rc_Get_SBUS.connect=1;
+		oldx_sbus_rx(com_data);
+		if(channels[16]==500||channels[16]==503){
+		Rc_Get_SBUS.update=1;Rc_Get_SBUS.lose_cnt_rx=0; }
+		if(Rc_Get_SBUS.lose_cnt_rx++>100){
+		Rc_Get_SBUS.update=0;}
 	}
 
   //接收中断
@@ -1312,10 +1105,8 @@ void USART3_IRQHandler(void)
 		{
 			USART3->CR1 &= ~USART_CR1_TXEIE;		//关闭TXE（发送中断）中断
 		}
-	}
-  
+	} 
    OSIntExit(); 
-
 }
 
 

@@ -132,62 +132,12 @@ u8 mode_control;
 	
 	
 mode_control=mode.mode_fly;
-//switch(main_state)
-//{ 
-//	
-//	case IDLE:
-//	if(mpu6050.Gyro_CALIBRATE)
-//	{idle_state=0;main_state=CAL_MPU;
-
-//	}
-//	else if(Mag_CALIBRATED)
-//	{idle_state=0;main_state=CAL_M;
-
-//	}
-//	break;
-//	case CAL_MPU:
-//  break;
-//	case CAL_M:
-//  break;
-//}
 //   | | | |    | | | |   | | | |   | | | |   | | | |
 //    ARM          GPS1     GPS2      GPS3      MODE  
 #define RGB_DELAY 3
 static u8 cnt_gps;
 static u8 flag_cnt_gps;
-if(cnt_gps++>1){cnt_gps=0;
-	flag_cnt_gps=!flag_cnt_gps;
-}
-if(state_set_point!=0)
-{
-idle_state=0;
-switch(state_set_point)
-{//ARM
-	case 1:
-		    if(flag_cnt_gps)
-				LEDRGB_COLOR(BLACK);		
-				else
-				LEDRGB_COLOR(RED);
-	break;
-	case 3:
-		 if(flag_cnt_gps)
-				LEDRGB_COLOR(BLACK);		
-				else
-				LEDRGB_COLOR(BLUE);
-	break;
-	case 5:
-		 if(flag_cnt_gps)
-				LEDRGB_COLOR(BLACK);		
-				else
-				LEDRGB_COLOR(WHITE);
-	break;
-	default:
-		LEDRGB_COLOR(BLACK);	
-  break;
-}
-
-}
-else if(sd.en_save)
+if(en_save)
 LEDRGB_COLOR(WHITE); 	
 else {
 main_state=0;
@@ -198,7 +148,7 @@ switch(idle_state)
 			{idle_state=1;cnt_idle=0;}
 	break;
 	case 1:
-	 if(state_v==SG_LOW_CHECK)
+	 if(1)//state_v==SG_LOW_CHECK)
 				LEDRGB_COLOR(WHITE); 
 		 else
 				LEDRGB_COLOR(RED);
@@ -246,206 +196,6 @@ switch(idle_state)
 	break;
 }
 }
-/*
-switch(idle_state)
-{//ARM
-	case 0:
-		if(main_state==IDLE)
-			{idle_state=1;cnt_idle=0;}
-	break;
-	case 1:
-	 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY*2)
-	{idle_state=2;cnt_idle=0;}
-	break;
-	case 2:
-		LEDRGB_COLOR(BLACK);	
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=3;cnt_idle=0;}
-	break;
-	case 3:
-			 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=4;cnt_idle=0;}
-	break;
-//GPS1	
-	case 4:
-		 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=5;cnt_idle=0;}
-	break;
-	case 5:
-		 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=6;cnt_idle=0;}
-	break;
-	case 6:
-		 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=7;cnt_idle=0;}
-	break;
-	case 7:
-			 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=8;cnt_idle=0;}
-	break;
-		
-//GPS2
-	case 8:
-			 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=9;cnt_idle=0;}
-	break;
-	case 9:
-			 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=10;cnt_idle=0;}
-	break;
-	case 10:
-			 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=11;cnt_idle=0;}
-	break;
-	case 11:
-			LEDRGB_COLOR(BLACK);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=12;cnt_idle=0;}
-	break;
-//GPS3	
-	case 12:
-			 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=13;cnt_idle=0;}
-	break;
-	case 13:
-		 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=14;cnt_idle=0;}
-	break;
-	case 14:
-		 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=15;cnt_idle=0;}
-	break;
-	case 15:
-			 if(circle.connect==1)
-				LEDRGB_COLOR(WHITE); 
-		 else
-				LEDRGB_COLOR(RED);
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=16;cnt_idle=0;}
-	break;
-//MODE
-	case 16:
-		switch(mode_control)
-	   {
-			 case 0:	LEDRGB_COLOR(YELLOW);break;//zit
-			 case 1:  LEDRGB_COLOR(GREEN);break;//gps
-		 }
-		
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=17;cnt_idle=0;}
-	break;
-	case 17:
-			switch(mode_control)
-	   {
-			 case 0:	LEDRGB_COLOR(YELLOW);break;//zit
-			 case 1:  LEDRGB_COLOR(GREEN);break;//gps
-		 }
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=18;cnt_idle=0;}
-	break;
-	case 18:
-			switch(mode_control)
-	   {
-			 case 0:	LEDRGB_COLOR(BLACK);break;//zit
-			 case 1:  LEDRGB_COLOR(BLACK);break;//gps
-		 }
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=19;cnt_idle=0;}
-	break;
-	case 19:
-				switch(mode_control)
-	   {
-			 case 0:	LEDRGB_COLOR(BLACK);break;//zit
-			 case 1:  LEDRGB_COLOR(BLACK);break;//gps
-		 }
-	if(cnt_idle++>RGB_DELAY)
-	{idle_state=20;cnt_idle=0;}
-	break;
-//-END
-	case 20:
-			LEDRGB_COLOR(BLACK);
-	if(cnt_idle++>20)
-	{idle_state=0;cnt_idle=0;}
-	break;
-}
-
-switch(mpu_state){
-	case 0:if(main_state==CAL_MPU)
-	  {mpu_state=1;LEDRGB_COLOR(YELLOW);}
-	       break;
-	case 1:
-		if(!mpu6050.Gyro_CALIBRATE)
-		{	mpu_state=2;LEDRGB_COLOR(BLACK);}
-		    break;
-	case 2:
-		 if(cnt++>10)
-		 {mpu_state=0;cnt=0;main_state=IDLE;}
-		 break;
-	default:mpu_state=0;break;
-	 }	 
-
-switch(m_state){
-	case 0:if(main_state==CAL_M)
-	  {m_state=1;LEDRGB_COLOR(BLUE);}
-	       break;
-	case 1:
-			if(!Mag_CALIBRATED)
-		{	m_state=2;LEDRGB_COLOR(GREEN);}
-		  break;
-	case 2:
-		 if(cnt++>10)
-		 {m_state=0;cnt=0;main_state=IDLE;}
-		 break;
-	default:m_state=0;break;
-	 }	 	 */
 }
 
 /******************* (C) COPYRIGHT 2014 ANO TECH *****END OF FILE************/
