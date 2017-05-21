@@ -39,7 +39,7 @@
 "..\obj\rc_mine.o"
 "..\obj\usart_fc.o"
 "..\obj\m100.o"
-"..\obj\sbus.o"
+"..\HARDWARE\IIC\sbus.lib"
 "..\obj\fliter.o"
 "..\obj\my_math.o"
 "..\obj\sd.o"

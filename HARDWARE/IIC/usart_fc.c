@@ -1,22 +1,14 @@
-
 #include "include.h"
 #include "usart_fc.h"
-#include "ultrasonic.h"
-#include "hml5833l.h"
-#include "mpu6050.h"
-#include "ms5611.h"
 #include "rc.h"
-#include "att.h"
-#include "height_ctrl.h"
-#include "alt_kf.h"
 #include "ucos_ii.h"
 #include "os_cpu.h"
 #include "os_cfg.h"
-#include "flow.h"
 #include "gps.h"
 #include "circle.h"
 #include "sd.h"
 #include "sbus.h"
+#include "m100.h"
  u8 SendBuff1[SEND_BUF_SIZE1];	//发送数据缓冲区
  u8 SendBuff4[SEND_BUF_SIZE4];	//发送数据缓冲区
 void Usart2_Init(u32 br_num)//--GOL-link

@@ -1,10 +1,6 @@
 
 #include "rc.h"
 #include "led_fc.h"
-#include "ms5611.h"
-#include "height_ctrl.h"
-#include "hml5833l.h"
-#include "alt_kf.h"
 #include "circle.h"
 
 #define RX_DR			6		//????
@@ -189,8 +185,6 @@ void Nrf_Check_Event(void)
 
 	NRF_Write_Reg(NRF_WRITE_REG + NRFRegSTATUS, sta);
 }
-
-#include "pwm_in.h"
 
 void NRF_Send_ARMED(void)//????
 {

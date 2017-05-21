@@ -1,25 +1,14 @@
 #include "include.h" 
-#include "iic_soft.h"
-#include "hml_sample.h"
-#include "ms5611.h"
-#include "ms5611_2.h"
-#include "hml5833l.h"
-#include "alt_kf.h"
 #include "flash.h"
 #include "led_fc.h"
 #include "ucos_ii.h"
 #include "os_cpu.h"
 #include "os_cfg.h"
 #include "ucos_task.h"
-#include "pwm_in.h"
-#include "flow.h"
-#include "circle.h"
-#include "eso.h"
-#include "gps.h"
 #include "m100.h"
 #include "sd.h"
 #include "sbus.h"
-
+#include "circle.h"
 
 
 OS_STK INNER_TASK_STK[INNER_STK_SIZE];

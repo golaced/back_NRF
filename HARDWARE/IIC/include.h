@@ -11,18 +11,13 @@
 
 #include <stm32f4xx.h>	    
 #include "time.h"
-#include "mpu6050.h"
-#include "parameter.h"
 #include "delay.h" 
 #include "malloc.h"   
 #include "usart_fc.h"   
 #include "spi_nrf.h"							//nrf24l01??spi.h??u8 Spi_RW(u8 dat)??
 #include "rc_mine.h"							//nrf24l01??spi.h??u8 Spi_RW(u8 dat)??
 #include "nrf.h"							//nrf24l01??spi.h??u8 Spi_RW(u8 dat)??
-#include "ultrasonic.h"
 #include "rc.h"
-#include "att.h"
-#include "height_ctrl.h"
 #include "flash.h"
 #include "dma.h"
 //#include "sd.h"
@@ -221,10 +216,6 @@ typedef double         fp64;                    /* double precision floating poi
 
 
 //zhong hang
-extern float PWM_DJ[4],target_position_task_s[2],target_position_task_e[2],yaw_ctrl_out,Yaw_set_dji,T_SHOOT_CHECK,AVOID[2],exp_height_check,exp_height_head_scan,exp_height_head_shoot;
-extern u8 num_need_to_check,state_v_test,en_shoot,SONAR_HEAD_CHECK[2],force_check_pass,cnt_shoot,tar_need_to_check_odroid[3];
-extern _st_height_pid_v ultra_ctrl,ultra_ctrl_safe,ultra_ctrl_head;
-extern int YUN_PER_OFF;//ÔÆÌ¨Ô¤Æ«
 void Flow_reset_pos(void);
 void Flow_save_tar_s(void);
 void Flow_set_tar(float set);
@@ -263,9 +254,6 @@ void Flow_set_tar(float set);
 #define  PWM_DJ0  1630//1680//( 1 / ( 1 + 1 / (k_reset*3.14f *0.01 ) ) ) * ( (float)(1830) -  PWM_DJ[0] );  ¸©Ñö
 #define	 PWM_DJ1 1500//( 1 / ( 1 + 1 / (k_reset*3.14f *0.01 ) ) ) * ( (float)(1500) -  PWM_DJ[1] );  ×óÓÒ
 
-
-extern float SHOOT_PWM_OFF0,SHOOT_PWM_OFF1,SHOOT_PWM_DEAD0,SHOOT_PWM_DEAD1, Pitch_DJ,Roll_DJ;;//Éä»÷Æ«²îcyds@stepholdings.com 
-
 #if USE_M100
 #define  OFF_RC_PIT 1500
 #define  OFF_RC_ROL 1500
@@ -277,22 +265,7 @@ extern float SHOOT_PWM_OFF0,SHOOT_PWM_OFF1,SHOOT_PWM_DEAD0,SHOOT_PWM_DEAD1, Pitc
 #define  OFF_RC_YAW 1520
 #define  OFF_RC_THR 1520
 #endif
-extern double home_point[2],check_way_point[2];//={39.962704, 116.3038848};
-extern double way_point[2][2];//={39.9626144, 116.3038848,  39.962736, 116.303872};
-extern double tar_point_globle[2],tar_point_globler[2],tar_now_gps[2];//={39.962704, 116.3038848};
-extern u8 gps_target_change,en_vrc;
-extern float k_m100[5];
-#include "m100.h"
-extern float k_m100_gps[3];//=  {2.25,2.25,1}; //p r t
-extern float k_m100_scan[3];//= {1,2.25,1};
-extern float k_m100_track[3],k_m100_shoot[3];//={1,1,1};
-extern float k_m100_laser_avoid,k_m100_yaw;//=0.5;
-extern u8 dji_rst_protect,dji_rst;
-extern u8 DJI_CONNECT, tar_buf[20],dji_rc_miss;
-extern u16 dji_miss_cnt;
-extern u16 cnt_m100_data_refresh,S_head;
-extern u8 m100_data_refresh;
-extern u8 state_set_point;
+
 #define SHOOT_USE_YUN 1
 #define DEBUG_IN_ROOM 0
 //-------------DEBUG_MODE_SEL------Warning!:Only can choose one mode---------

@@ -1,7 +1,7 @@
 #include "include.h"
 #include "circle.h"
 #include "usart.h"
-
+#include "m100.h"
 M100 m100;
 void m100_rst(u16 delay)
 {
