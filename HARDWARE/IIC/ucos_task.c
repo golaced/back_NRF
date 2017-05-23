@@ -14,16 +14,16 @@ float ALT_POS_SONAR2,q_nav[4],ALT_VEL_BMP_EKF;
 float Roll,Yaw,Pitch;
 u32 Rc_Pwm_Inr_mine[8];
 u32 Rc_Pwm_In_mine[8],Rc_Pwm_Out_mine[8];
-//==============================传感器 任务函数==========================
+
 OS_STK MEMS_TASK_STK[MEMS_STK_SIZE];
 void mems_task(void *pdata)
-{		static u8 cnt,cnt1;						 
+{	 
  	while(1)
 	{
 	}
 }		
 //--------------------
-
+//=============================核心状态机 任务函数==========================
 OS_STK INNER_TASK_STK[INNER_STK_SIZE];
 u16 Rc_Pwm_In[8];
 float inner_loop_time;
@@ -31,9 +31,7 @@ float inner_loop_time;
 void inner_task(void *pdata)
 {NVIC_InitTypeDef NVIC_InitStructure;
  u8 i;
- static u8 dj_fly_line=0;
  static u8 init;	
- static int flag_scan=1;
  	while(1)
 	{
 	inner_loop_time = Get_Cycle_T(GET_T_INNER); 						//获取内环准确的执行周期
@@ -44,7 +42,7 @@ void inner_task(void *pdata)
 
 
 
-//========================外环  任务函数============================
+//========================定高 定点 任务函数============================
 OS_STK OUTER_TASK_STK[OUTER_STK_SIZE];
 float outer_loop_time;
 float Pitch_R,Roll_R,Yaw_R;
@@ -90,24 +88,14 @@ OS_STK SONAR_TASK_STK[SONAR_STK_SIZE];
 void sonar_task(void *pdata)
 {							  
  	while(1)
-	{if(1){
-
-	}
+	{
 	delay_ms(100);  
 	}
 }	
 
 #include "sdio.h"
-//=======================光流 任务函数==================
+//=======================SD卡任务函数==================
 OS_STK FLOW_TASK_STK[FLOW_STK_SIZE];
-#define ACC_SPEED_NUM 25
-u8 ACC_SPEED_NUM_USE=10;
-u16 acc_cnt[2];
-float acc_v[3];
-float acc_speed_arr[ACC_SPEED_NUM + 1];
-float wz_speed_flow[2];
-float w_acc_spd=0.915;
-float w_acc_fix=0.1;
 float sd_time;
 u16 sd_dt=100;
 void flow_task(void *pdata)
@@ -207,7 +195,7 @@ void m100_task(void *pdata)
 	}
 }
 #include "filter.h"
-//=======================串口 任务函数===========================
+//=======================接收机任务函数===========================
 OS_STK  UART_TASK_STK[UART_STK_SIZE];
 u8 UART_UP_LOAD_SEL=4;//<------------------------------UART UPLOAD DATA SEL
 u8 state_v_test=0;
