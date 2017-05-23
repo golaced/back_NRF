@@ -11,7 +11,6 @@
 
 #include <stm32f4xx.h>	    
 #include "time.h"
-#include "mpu6050.h"
 #include "parameter.h"
 #include "delay.h" 
 #include "malloc.h"   
@@ -19,7 +18,6 @@
 #include "spi_nrf.h"							//nrf24l01??spi.h??u8 Spi_RW(u8 dat)??
 #include "rc_mine.h"							//nrf24l01??spi.h??u8 Spi_RW(u8 dat)??
 #include "nrf.h"							//nrf24l01??spi.h??u8 Spi_RW(u8 dat)??
-#include "ultrasonic.h"
 #include "rc.h"
 #include "att.h"
 #include "height_ctrl.h"
@@ -87,7 +85,7 @@ extern float dj_angle_set,dj_angle_offset[3];
 #define PLANE_IS_BIG  0  //0->穿越机
 #define USE_CYCLE_HML_CAL  0//0->使用椭球拟合
 #define DEBUG_WITHOUT_SB 0
-#define GET_TIME_NUM 	(15)		//设置获取时间的数组数量
+#define GET_TIME_NUM 	(20)		//设置获取时间的数组数量
 #define USE_TOE_IN_UNLOCK 0 // 0：默认解锁方式，1：外八解锁方式
 //============== DMA使能=========================
 #define EN_DMA_UART1 1  //UPLOAD

@@ -1,9 +1,9 @@
 #include "include.h"
 #include "circle.h"
-#include "alt_kf.h"
+#include "my_math.h"
 
 CIRCLE circle,track,mouse;
-M100 m100;
+float Yaw_set_dji;
 float nav_circle[2],nav_circle_last[2];
 /*
         y add (0~256)  1
@@ -58,7 +58,7 @@ void circle_control(float T)
 //	if(ALT_POS_SONAR2<0.15)
 //		 distance_use=0.8;
 //	else
-		distance_use=ALT_POS_SONAR2;
+		distance_use=0;//ALT_POS_SONAR2;
 		//circle_use[0]=circle.x_flp-160;
 	   circle_use[0]-=MID_X;
 		//circle_use[1]=circle.y_flp-128;
@@ -126,7 +126,6 @@ void circle_control(float T)
 
 
 //----------------------------------GPS------------------------
-#include "pwm_in.h"
 #include "gps.h"
 #include "filter.h"
 float nav_gps[2];
@@ -322,11 +321,11 @@ void  GPS_hold(nmea_msg *gpsx_in,float T)
 		
 
 	u8 flag;
-	if(Rc_Pwm_Inr_mine[RC_PITCH]<OFF_RC_PIT-80||Rc_Pwm_Inr_mine[RC_PITCH]>OFF_RC_PIT+80||
-	Rc_Pwm_Inr_mine[RC_ROLL]<OFF_RC_ROL-80||Rc_Pwm_Inr_mine[RC_ROLL]>OFF_RC_ROL+80)
-	flag=1;
-	else 
-	flag=0;
+//	if(Rc_Pwm_Inr_mine[RC_PITCH]<OFF_RC_PIT-80||Rc_Pwm_Inr_mine[RC_PITCH]>OFF_RC_PIT+80||
+//	Rc_Pwm_Inr_mine[RC_ROLL]<OFF_RC_ROL-80||Rc_Pwm_Inr_mine[RC_ROLL]>OFF_RC_ROL+80)
+//	flag=1;
+//	else 
+//	flag=0;
 	
 	navUkfCalcEarthRadius(lat);
   if(flag)//–¸Õ£≤‚ ‘	
@@ -349,11 +348,11 @@ void  GPS_hold(nmea_msg *gpsx_in,float T)
 
   
   float yaw_use;
-  #if USE_M100
-  yaw_use=Moving_Median(23,3,m100.Yaw);
-  #else
-  yaw_use=Yaw;		
-  #endif	
+//  #if USE_M100
+//  yaw_use=Moving_Median(23,3,m100.Yaw);
+//  #else
+//  yaw_use=Yaw;		
+//  #endif	
 	navUkfData.yawCos=cos(0.0173*yaw_use);
 	navUkfData.yawSin=sin(0.0173*yaw_use);
 	

@@ -401,6 +401,11 @@
           <WinNumber>2</WinNumber>
           <ItemText>SBUS_MID_A,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>21</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>time5</ItemText>
+        </Ww>
       </WatchWindow2>
       <MemoryWindow1>
         <Mm>
@@ -1063,12 +1068,12 @@
     <File>
       <GroupNumber>7</GroupNumber>
       <FileNumber>47</FileNumber>
-      <FileType>1</FileType>
+      <FileType>4</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\HARDWARE\IIC\sbus.c</PathWithFileName>
-      <FilenameWithoutPath>sbus.c</FilenameWithoutPath>
+      <PathWithFileName>..\HARDWARE\IIC\sbus_oldx.lib</PathWithFileName>
+      <FilenameWithoutPath>sbus_oldx.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

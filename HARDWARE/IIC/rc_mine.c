@@ -1,12 +1,9 @@
 
 #include "rc.h"
 #include "led_fc.h"
-#include "ms5611.h"
 #include "height_ctrl.h"
-#include "hml5833l.h"
-#include "alt_kf.h"
 #include "circle.h"
-
+#include "my_math.h"
 #define RX_DR			6		//????
 #define TX_DS			5
 #define MAX_RT		4
@@ -118,12 +115,6 @@ u8 temp;
 		RX_CH[AUX3r]=Rc_Get.AUX3			= (vs16)(NRF24L01_RXDATA[15]<<8)|NRF24L01_RXDATA[16];
 		RX_CH[AUX2r]=Rc_Get.AUX2			= (vs16)(NRF24L01_RXDATA[17]<<8)|NRF24L01_RXDATA[18];
 		Rc_Get.AUX5			= (vs16)(NRF24L01_RXDATA[19]<<8)|NRF24L01_RXDATA[20];
-
-		ctrl_angle_offset.x =(float)(Rc_Get.AUX1-500)/1000.*MAX_FIX_ANGLE*2;
-		ctrl_angle_offset.y =(float)(Rc_Get.AUX2-500)/1000.*MAX_FIX_ANGLE*2;
-
-		if(fabs(ctrl_angle_offset.x )<0.2)  {ctrl_angle_offset.x =0;}
-	 	if(fabs(ctrl_angle_offset.y )<0.2)  {ctrl_angle_offset.y =0;}
 		
 	  RX_CH[THRr]=	Rc_Get.THROTTLE-RX_CH_FIX[THRr]	;
 	  RX_CH[ROLr]=  Rc_Get.ROLL-RX_CH_FIX[ROLr]	;
@@ -140,29 +131,6 @@ u8 temp;
 		KEY[5]=(NRF24L01_RXDATA[22]>>5)&0x01;
 		KEY[6]=(NRF24L01_RXDATA[22]>>6)&0x01;
 		KEY[7]=(NRF24L01_RXDATA[22]>>7)&0x01;
-		
-		ypr_sb[0]=(int)(((NRF24L01_RXDATA[23]<<8)|NRF24L01_RXDATA[24]))/100.;
-		ypr_sb[1]=(int)(((NRF24L01_RXDATA[25]<<8)|NRF24L01_RXDATA[26]))/100.;
-		ypr_sb[2]=(int)(((NRF24L01_RXDATA[27]<<8)|NRF24L01_RXDATA[28]))/100.;		
-		for(j=0;j<3;j++)
-		  if(ypr_sb[j]>360)
-				ypr_sb[j]-=655.35;
-		if(mode.yaw_imu_control)	
-		RX_CH[YAWr]=  Rc_Get.YAW-RX_CH_FIX[YAWr]	;
-		else{	
-		if(fabs( ypr_sb[2])>32&&fabs(ypr_sb[1])<15)	
-		RX_CH[YAWr]=  limit_mine(ypr_sb[2]*10,500)	+1500;
-		else
-		RX_CH[YAWr]=1500;	
-	}
-		if(mode.dj_lock){
-		if(fabs( ypr_sb[1]-17)>40&&fabs(ypr_sb[2])<15)	
-		{dj_angle_set+= (ypr_sb[1]-17)*0.008;
-		dj_angle_set=LIMIT(dj_angle_set,-12,12);//SCALE_DJ*30,SCALE_DJ*30);
-		}
-	}
-		else
-		dj_angle_set=0;	
 //-------------------------------------------------------------------------------------------------------------------------		
 	 }
 	else if(NRF24L01_RXDATA[1]==0x8B)								//?????,=0x8a,?????
@@ -200,131 +168,9 @@ u8 temp;
 		  SPID.YP = (float)((vs16)(NRF24L01_RXDATA[16]<<8)|NRF24L01_RXDATA[17]);
 			SPID.YI = (float)((vs16)(NRF24L01_RXDATA[18]<<8)|NRF24L01_RXDATA[19]);
 			SPID.YD = (float)((vs16)(NRF24L01_RXDATA[20]<<8)|NRF24L01_RXDATA[21]);
-	/*	ctrl_1.PID[PIDPITCH].kp =ctrl_1.PID[PIDROLL].kp  = 0.001*SPID.IP;
-		ctrl_1.PID[PIDPITCH].ki =ctrl_1.PID[PIDROLL].ki  = 0.001*SPID.II;
-		ctrl_1.PID[PIDPITCH].kd =ctrl_1.PID[PIDROLL].kd  = 0.001*SPID.ID;
-		ctrl_1.PID[PIDYAW].kp 	= 0.001*SPID.YP;
-		//ctrl_1.PID[PIDYAW].ki 	= 0.001*;
-		//ctrl_1.PID[PIDYAW].kd 	= 0.001*;
-		ctrl_2.PID[PIDPITCH].kp =ctrl_2.PID[PIDROLL].kp  = 0.001*SPID.OP;
-		ctrl_2.PID[PIDPITCH].ki =ctrl_2.PID[PIDROLL].ki  = 0.001*SPID.OI;
-		ctrl_2.PID[PIDPITCH].kd =ctrl_2.PID[PIDROLL].kd  = 0.001*SPID.OD;
-		ctrl_2.PID[PIDYAW].kp 	= 0.001*SPID.YD;
-		ctrl_2.PID[PIDYAW].ki 	= 0.001*SPID.YI;
-		//ctrl_2.PID[PIDYAW].kd 	= 0.001*SPID.YD;
-*/
-//nav    01
-		
-    //height  11
-		 if(KEY[0]==1&&KEY[1]==1){
-			 
-//			 if(mode.height_safe){
-			//if(mode.test3||mode.test2)
-			//{
-//		  ultra_pid_head.kp =  		0.001*(float)SPID.OP;
-//		  ultra_pid_head.ki =  		0.001*(float)SPID.OI;
-//			ultra_pid_head.kd = 		0.001*(float)SPID.OD;
-//      exp_height_head_scan=			  SPID.YP;
-//			exp_height_head_shoot=			  SPID.YI;
-//			AVOID[0]=AVOID[1]=      0.001*(float)SPID.IP;
-//			YUN_PER_OFF=SPID.YD;
-			 //k_m100_yaw=  		0.001*(float)SPID.OP;
-			 
-//			}else{
-//			 ctrl_2.PID[PIDYAW].kp=  		0.001*(float)SPID.IP;
-//			 ctrl_2.PID[PIDYAW].ki=  		0.001*(float)SPID.II;
-//			 ctrl_2.PID[PIDYAW].kd=  		0.001*(float)SPID.ID;
-		  ultra_pid.kp =  		0.001*(float)SPID.OP;
-			ultra_pid.ki =  		0.001*(float)SPID.OI;
-			ultra_pid.kd = 			0.001*(float)SPID.OD;
-//			k_m100_gps[0]=0.001*(float)SPID.OP;//p R
-//			k_m100_gps[1]=0.001*(float)SPID.OI;//T
-//			k_m100_gps[2]=0.001*(float)SPID.OD;//y
-//			  
-//			k_m100_track[1] = 0.001*(float)SPID.IP;
-//			k_m100_shoot[1] = 0.001*(float)SPID.II;
-//			pid.nav.in.d = 0.001*(float)SPID.ID;
-//			 
-//			pid.nav.out.p= 0.01*(float)SPID.OP;
-//			pid.nav.out.i= 0.01*(float)SPID.OI;
-//			pid.nav.out.d= 0.001*(float)SPID.OD;
-//        Yaw_set_dji= 0.1*(float)SPID.YP;
-//				k_m100_laser_avoid= 0.001*(float)SPID.YP;//位置死区mm
-//				circle.control_k=-0.001*(float)SPID.YI;//位置死区mm
-//				AVOID[0]=AVOID[1]=0.001*(float)SPID.YD;
-//			pid.nav.in.dead=  (float)SPID.YI/1000.;//速度死区mm/s
-//			pid.nav.in.dead2= (float)SPID.YD/1000.;
-			 }
-	 else
-	 {  
-		track.control_yaw=   0.001*(float)SPID.OP;//左右增益
-		circle.control_k=  	0.001*(float)SPID.OI;//上下增益
-//		track.forward_end_dj_pwm=0.001*(float)SPID.OD;//航向增益
-//		   //YUN_PER_OFF=SPID.YI;//预偏值
-//		   Yaw_set_dji=SPID.YD;//设定航线 0~360
-//	 gps_pid.kp=0.001*(float)SPID.OP;
-//	 gps_pid.ki=0.001*(float)SPID.OI;
-//	 gps_pid.kd=0.001*(float)SPID.OD;
-//		  ultra_pid_head.kp =  		0.001*(float)SPID.OP;
-//			ultra_pid_head.ki =  		0.001*(float)SPID.OI;
-//			ultra_pid_head.kd = 		0.001*(float)SPID.OD;	
-	 //	pid.circle.in.p = 0.001*(float)SPID.IP;
-	//	pid.circle.in.i = 0.001*(float)SPID.II;
-	//	pid.circle.in.d = 0.001*(float)SPID.ID;
-	//	pid.circle.out.p= 0.001*(float)SPID.OP;
-	  
-   // track.forward= (float)SPID.YP;
-	 // track.forward_end_dj_pwm= 0.01*(float)SPID.YI; 
-	 //	track.control_yaw=0.001*(float)SPID.YD; 
-	}
-	 
-//	if(KEY[0]==1&&KEY[1]==0){
-//			pid.nav.in.p = 0.001*(float)SPID.IP;
-//			pid.nav.in.i = 0.001*(float)SPID.II;
-//			pid.nav.in.d = 0.001*(float)SPID.ID;
-//			pid.nav.out.p= 0.01*(float)SPID.OP;
-//			pid.nav.out.i= 0.01*(float)SPID.OI;
-//			pid.nav.out.d= 0.001*(float)SPID.OD;
-//			//if(SPID.OI!=0)
-//			//pid.nav.out.i=    (float)SPID.OI/100.;//dlf_nav
-//			//else
-//			//pid.nav.out.i=8;	
-//			//pid.avoid.out.p=  (float)SPID.OD/100.;
-//			
-//			pid.nav.out.dead= (float)SPID.YP/1000.;//位置死区mm
-//			pid.nav.in.dead=  (float)SPID.YI/1000.;//速度死区mm/s
-//			pid.nav.in.dead2= (float)SPID.YD/1000.;
-//			
 
-//		}
-//			 {
-//			ultra_pid_safe.kp =  		 0.001*(float)SPID.OP;
-//			ultra_pid_safe.ki =  		 0.001*(float)SPID.OI;
-//			ultra_pid_safe.kd = 		 0.001*(float)SPID.OD;
-//			wz_speed_pid_safe.kp =   0.01*(float)SPID.IP; 
-//			wz_speed_pid_safe.ki =   0.01*(float)SPID.II;
-//			wz_speed_pid_safe.kd =   0.01*(float)SPID.ID;
-//			 }
-//		}
-//		else{
-//			pid.nav.in.p = 0.01*(float)SPID.IP;
-//			pid.nav.in.i = 0.01*(float)SPID.II;
-//			pid.nav.in.d = 0.01*(float)SPID.ID;
-//			pid.nav.out.p= 0.01*(float)SPID.OP;
-//			//if(SPID.OI!=0)
-//			//pid.nav.out.i=    (float)SPID.OI/100.;//dlf_nav
-//			//else
-//			//pid.nav.out.i=8;	
-//			//pid.avoid.out.p=  (float)SPID.OD/100.;
-//			
-//			pid.nav.out.dead= (float)SPID.YP/100.;//位置死区mm
-//			pid.nav.in.dead=  (float)SPID.YI/100.;//速度死区mm/s
-//			pid.nav.in.dead2= (float)SPID.YD/100.;
-//			
-
-//		}
 			}
-		//	EE_SAVE_PID();
+
 		}
 	else 		if(NRF24L01_RXDATA[1]==0x8D)	//??PID2
 		{
@@ -332,11 +178,7 @@ u8 temp;
 			HPID.OI = (float)((vs16)(NRF24L01_RXDATA[6]<<8)|NRF24L01_RXDATA[7]);
 			HPID.OD = (float)((vs16)(NRF24L01_RXDATA[8]<<8)|NRF24L01_RXDATA[9]);
 			
-		//	EE_SAVE_PID();
 		}
-
-
-	
 
 }
 
@@ -369,7 +211,6 @@ void Nrf_Check_Event(void)
 					for(int i=0;i<32;i++)
 					NRF24L01_RXDATA_REG[i]=NRF24L01_RXDATA[i];
 					}
-					//LEDRGB_STATE();
 					NRF_DataAnl();	//??2401??????
 				
 				}
@@ -387,19 +228,9 @@ void Nrf_Check_Event(void)
 	else//---------losing_nrf
 	 {	
 		 if(cnt_loss_rc++>200 )//0.5ms
-		 {	force_Thr_low=1;
-			 NRF_Write_Reg(FLUSH_RX,0xff);//?????
-//		   CH[PIT]=CH[ROL]=CH[YAW]=0;
-//			 if(height_ctrl_mode==0)
-//			 CH[THR]=-500; 
-//			 else
-//			 CH[THR]=0;
-			 
-				
-	  	RX_CH[PITr]=RX_CH[ROLr]=RX_CH[YAWr]=1500;
-//			if(height_ctrl_mode==0)
-//			 RX_CH[THR]=1500; 
-//			 else
+		 {
+			 NRF_Write_Reg(FLUSH_RX,0xff);		
+	  	 RX_CH[PITr]=RX_CH[ROLr]=RX_CH[YAWr]=1500;
 			 RX_CH[THRr]=1000;
 			
 		 }
@@ -424,8 +255,6 @@ void Nrf_Check_Event(void)
 	////////////////////////////////////////////////////////////////
 	NRF_Write_Reg(NRF_WRITE_REG + NRFRegSTATUS, sta);
 }
-
-#include "pwm_in.h"
 
 void NRF_Send_ARMED(void)//????
 {

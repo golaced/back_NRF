@@ -3,9 +3,9 @@
 #include "include.h"
 #include "rc.h"
 #include "my_math.h"
-#include "mpu6050.h"
 #include "height_ctrl.h"
-#include "ultrasonic.h"
+u8 ultra_ok;
+
 s8 CH_in_Mapping[CH_NUM] = {0,1,2,3,4,5,6,7};    //通道映射
 u16 RX_CH[CH_NUM];
 int RX_CH_FIX[4];
@@ -210,7 +210,6 @@ void Feed_Rc_Dog(u8 ch_mode) //400ms内必须调用一次
 //  全局输出，CH_filter[],0横滚，1俯仰，2油门，3航向 范围：+-500	
 //=================== filter =================================== 	
 u8 height_ctrl_mode = 0,height_ctrl_mode_use;
-extern u8 ultra_ok;
 void Mode_FC(void)
 {static u8 last_height_ctrl_mode;
 	if(1){

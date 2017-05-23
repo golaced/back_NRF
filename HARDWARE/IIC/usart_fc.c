@@ -1,18 +1,12 @@
 
 #include "include.h"
 #include "usart_fc.h"
-#include "ultrasonic.h"
-#include "hml5833l.h"
-#include "mpu6050.h"
-#include "ms5611.h"
 #include "rc.h"
 #include "att.h"
 #include "height_ctrl.h"
-#include "alt_kf.h"
 #include "ucos_ii.h"
 #include "os_cpu.h"
 #include "os_cfg.h"
-#include "flow.h"
 #include "gps.h"
 #include "circle.h"
 #include "sd.h"
@@ -74,13 +68,6 @@ void Usart2_Init(u32 br_num)//--GOL-link
 	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
 	//使能USART2
 	USART_Cmd(USART2, ENABLE); 
-//	//使能发送（进入移位）中断
-//	if(!(USART2->CR1 & USART_CR1_TXEIE))
-//	{
-//		USART_ITConfig(USART2, USART_IT_TXE, ENABLE); 
-//	}
-
-
 }
 RESULT color;
 float dt_flow_rx;
@@ -113,19 +100,19 @@ float ALT_POS_SONAR_HEAD,ALT_POS_SONAR_HEAD_LASER_SCANER;
   {
 	  imu_loss_cnt=0;
     NAV_BOARD_CONNECT=1;
-		imu_nav.flow.rate=*(data_buf+4);
-		imu_nav.flow.speed.y_f=(float)((int16_t)((*(data_buf+5)<<8)|*(data_buf+6)))/1000.;
-		imu_nav.flow.speed.x_f=(float)((int16_t)((*(data_buf+7)<<8)|*(data_buf+8)))/1000.;
-		imu_nav.flow.speed.y = (float)(int16_t)((*(data_buf+9)<<8)|*(data_buf+10))/1000.;
-		imu_nav.flow.speed.x = (float)(int16_t)((*(data_buf+11)<<8)|*(data_buf+12))/1000.;
-		now_position[LON]=(float)(int16_t)((*(data_buf+13)<<8)|*(data_buf+14))/100.;//m
-		now_position[LAT]=(float)(int16_t)((*(data_buf+15)<<8)|*(data_buf+16))/100.;//m
-		//ALT_VEL_SONAR=(float)(int16_t)((*(data_buf+17)<<8)|*(data_buf+18))/1000.;//m
-		float temp=(float)(int16_t)((*(data_buf+19)<<8)|*(data_buf+20))/1000.;//m
-			if(temp<8.888)
-	  ALT_POS_SONAR_HEAD = temp;
-		SONAR_HEAD_CHECK[0]=*(data_buf+4);
-    S_head=(float)(int16_t)((*(data_buf+33)<<8)|*(data_buf+34));
+//		imu_nav.flow.rate=*(data_buf+4);
+//		imu_nav.flow.speed.y_f=(float)((int16_t)((*(data_buf+5)<<8)|*(data_buf+6)))/1000.;
+//		imu_nav.flow.speed.x_f=(float)((int16_t)((*(data_buf+7)<<8)|*(data_buf+8)))/1000.;
+//		imu_nav.flow.speed.y = (float)(int16_t)((*(data_buf+9)<<8)|*(data_buf+10))/1000.;
+//		imu_nav.flow.speed.x = (float)(int16_t)((*(data_buf+11)<<8)|*(data_buf+12))/1000.;
+//		now_position[LON]=(float)(int16_t)((*(data_buf+13)<<8)|*(data_buf+14))/100.;//m
+//		now_position[LAT]=(float)(int16_t)((*(data_buf+15)<<8)|*(data_buf+16))/100.;//m
+//		//ALT_VEL_SONAR=(float)(int16_t)((*(data_buf+17)<<8)|*(data_buf+18))/1000.;//m
+//		float temp=(float)(int16_t)((*(data_buf+19)<<8)|*(data_buf+20))/1000.;//m
+//			if(temp<8.888)
+//	  ALT_POS_SONAR_HEAD = temp;
+//		SONAR_HEAD_CHECK[0]=*(data_buf+4);
+//    S_head=(float)(int16_t)((*(data_buf+33)<<8)|*(data_buf+34));
 			
 		//ALT_VEL_BMP=(float)(int16_t)((*(data_buf+21)<<8)|*(data_buf+22))/1000.;//m
 		//ALT_POS_BMP=(float)(int32_t)((*(data_buf+23)<<24)|(*(data_buf+24)<<16)|(*(data_buf+25)<<8)|*(data_buf+26))/1000.;//m
@@ -181,15 +168,15 @@ else if(*(data_buf+2)==0x10)//Mems
 	}	*/	
 	else if(*(data_buf+2)==0x11)//Att
   { //dt_flow_rx= Get_Cycle_T(GET_T_FLOW_UART);	
-	  Pitch=(float)((int16_t)(*(data_buf+4)<<8)|*(data_buf+5))/10.;
-    Roll=(float)((int16_t)(*(data_buf+6)<<8)|*(data_buf+7))/10.;
-		Yaw=(float)((int16_t)(*(data_buf+8)<<8)|*(data_buf+9))/10.;
-		q_nav[0]=(float)((int16_t)(*(data_buf+10)<<8)|*(data_buf+11))/1000.;
-		q_nav[1]=(float)((int16_t)(*(data_buf+12)<<8)|*(data_buf+13))/1000.;
-		q_nav[2]=(float)((int16_t)(*(data_buf+14)<<8)|*(data_buf+15))/1000.;
-		q_nav[3]=(float)((int16_t)(*(data_buf+16)<<8)|*(data_buf+17))/1000.;
-		Pitch_DJ=(float)((int16_t)(*(data_buf+18)<<8)|*(data_buf+19))/10.;
-    Roll_DJ= (float)((int16_t)(*(data_buf+20)<<8)|*(data_buf+21))/10.;
+//	  Pitch=(float)((int16_t)(*(data_buf+4)<<8)|*(data_buf+5))/10.;
+//    Roll=(float)((int16_t)(*(data_buf+6)<<8)|*(data_buf+7))/10.;
+//		Yaw=(float)((int16_t)(*(data_buf+8)<<8)|*(data_buf+9))/10.;
+//		q_nav[0]=(float)((int16_t)(*(data_buf+10)<<8)|*(data_buf+11))/1000.;
+//		q_nav[1]=(float)((int16_t)(*(data_buf+12)<<8)|*(data_buf+13))/1000.;
+//		q_nav[2]=(float)((int16_t)(*(data_buf+14)<<8)|*(data_buf+15))/1000.;
+//		q_nav[3]=(float)((int16_t)(*(data_buf+16)<<8)|*(data_buf+17))/1000.;
+//		Pitch_DJ=(float)((int16_t)(*(data_buf+18)<<8)|*(data_buf+19))/10.;
+//    Roll_DJ= (float)((int16_t)(*(data_buf+20)<<8)|*(data_buf+21))/10.;
 		//Pitch_mid_down=(float)((int16_t)(*(data_buf+18)<<8)|*(data_buf+19))/10.;
     //Roll_mid_down=(float)((int16_t)(*(data_buf+20)<<8)|*(data_buf+21))/10.;
 		//Yaw_mid_down=(float)((int16_t)(*(data_buf+22)<<8)|*(data_buf+23))/10.;
@@ -197,7 +184,7 @@ else if(*(data_buf+2)==0x10)//Mems
 		//ref_q_imd_down[1]=(float)((int16_t)(*(data_buf+26)<<8)|*(data_buf+27))/1000.;
 		//ref_q_imd_down[2]=(float)((int16_t)(*(data_buf+28)<<8)|*(data_buf+29))/1000.;
 		//ref_q_imd_down[3]=(float)((int16_t)(*(data_buf+30)<<8)|*(data_buf+31))/1000.;
-		ALT_VEL_BMP_EKF=(float)(int16_t)((*(data_buf+32)<<8)|*(data_buf+33))/1000.;//m
+		//ALT_VEL_BMP_EKF=(float)(int16_t)((*(data_buf+32)<<8)|*(data_buf+33))/1000.;//m
 		
 		
   	//reference_vr[0]=reference_v.x = 2*(q_nav[1]*q_nav[3] - q_nav[0]*q_nav[2]);
@@ -370,13 +357,6 @@ void Usart1_Init(u32 br_num)//-------UPload_board1
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 	//使能USART2
 	USART_Cmd(USART1, ENABLE); 
-//	//使能发送（进入移位）中断
-//	if(!(USART2->CR1 & USART_CR1_TXEIE))
-//	{
-//		USART_ITConfig(USART2, USART_IT_TXE, ENABLE); 
-//	}
-
-
 }
 
 
@@ -581,49 +561,6 @@ int16_t BLE_DEBUG[16];
 	BLE_DEBUG[13]=((vs16)(*(data_buf+30)<<8)|*(data_buf+31));
 	BLE_DEBUG[14]=((vs16)(*(data_buf+32)<<8)|*(data_buf+33));
 	BLE_DEBUG[15]=((vs16)(*(data_buf+34)<<8)|*(data_buf+35));		
-		
-	/*
-	fly_controller.gps.J = 			  ((long)(*(data_buf+4)<<24)|(*(data_buf+5)<<16)|(*(data_buf+6)<<8)|*(data_buf+7));//W
-	fly_controller.gps.W = 			  ((long)(*(data_buf+8)<<24)|(*(data_buf+9)<<16)|(*(data_buf+10)<<8)|*(data_buf+11));//J
-	fly_controller.gps.gps_mode =  *(data_buf+12);//W
-	fly_controller.gps.star_num =  *(data_buf+13);//J
-	fly_controller.gps.X_O = 			((long)(*(data_buf+14)<<24)|(*(data_buf+15)<<16)|(*(data_buf+16)<<8)|*(data_buf+17));//W
-	fly_controller.gps.Y_O = 			((long)(*(data_buf+18)<<24)|(*(data_buf+19)<<16)|(*(data_buf+20)<<8)|*(data_buf+21));//J
-	fly_controller.gps.X_UKF = 		((long)(*(data_buf+22)<<24)|(*(data_buf+23)<<16)|(*(data_buf+24)<<8)|*(data_buf+25));//W
-	fly_controller.gps.Y_UKF = 		((long)(*(data_buf+26)<<24)|(*(data_buf+27)<<16)|(*(data_buf+28)<<8)|*(data_buf+29));//J
-		*/
-	}
-				else if(*(data_buf+2)==0x09)								//飞控使用光流数据
-	{
-	
-			 mark[0][0] = ((vs16)(*(data_buf+4)<<8)|*(data_buf+5));
-	     mark[0][1] = ((vs16)(*(data_buf+6)<<8)|*(data_buf+7));
-			 mark[0][2] =  ((vs16)(*(data_buf+8)<<8)|*(data_buf+9));
-	     mark[1][0] =  ((vs16)(*(data_buf+10)<<8)|*(data_buf+11));
-		   mark[1][1] = ((vs16)(*(data_buf+12)<<8)|*(data_buf+13));
-	     mark[1][2] = ((vs16)(*(data_buf+14)<<8)|*(data_buf+15));
-		   mark[2][0] = ((vs16)(*(data_buf+16)<<8)|*(data_buf+17));
-	     mark[2][1] = ((vs16)(*(data_buf+18)<<8)|*(data_buf+19));
-			 mark[2][2]= ((vs16)(*(data_buf+20)<<8)|*(data_buf+21));
-			 mark[3][0]= ((vs16)(*(data_buf+22)<<8)|*(data_buf+23));
-			 mark[3][1]= ((vs16)(*(data_buf+24)<<8)|*(data_buf+25));
-			 mark[3][2]= ((vs16)(*(data_buf+26)<<8)|*(data_buf+27));
-		 
-		   mark[0][3]= *(data_buf+28);
-		   mark[1][3]= *(data_buf+29);
-		   mark[2][3]= *(data_buf+30);
-		   mark[3][3]= *(data_buf+31);
-//		   mark[0][0]= ((vs16)(*(data_buf+28)<<8)|*(data_buf+29));
-//			 baro_matlab_data[1]= ((vs16)(*(data_buf+30)<<8)|*(data_buf+31));
-//		   qr_matlab_data[0]= *(data_buf+32);
-//			 qr_matlab_data[1]= ((vs16)(*(data_buf+33)<<8)|*(data_buf+34));
-//			 qr_matlab_data[2]= ((vs16)(*(data_buf+35)<<8)|*(data_buf+36));
-//			 qr_matlab_data[3]= ((vs16)(*(data_buf+35)<<8)|*(data_buf+36));
-//			 qr_matlab_data_att[0]= ((vs16)(*(data_buf+37)<<8)|*(data_buf+38));
-//			 qr_matlab_data_att[1]= ((vs16)(*(data_buf+39)<<8)|*(data_buf+40));
-//			 qr_matlab_data_att[2]= ((vs16)(*(data_buf+41)<<8)|*(data_buf+42));
-//       k_scale_pix= ((vs16)(*(data_buf+43)<<8)|*(data_buf+44));
-		
 	}
 	//---------------------------------------------------------------------
 	else if(*(data_buf+2)==0x71)								//判断功能字0x81 飞控Sensor数据
@@ -640,38 +577,6 @@ int16_t BLE_DEBUG[16];
 		  fly_controller.sensor.bmp = ((vs16)(*(data_buf+22)<<8)|*(data_buf+23));
 		  fly_controller.sensor.temp = ((vs16)(*(data_buf+24)<<8)|*(data_buf+25));
 		  fly_controller.sensor.sonar = ((vs16)(*(data_buf+26)<<8)|*(data_buf+27));
-	}
-		else if(*(data_buf+2)==0x74)								//判断功能字0x82 PID参数
-	{
-	
-			fly_controller.pid.pp_o = ((u16)(*(data_buf+4)<<8)|*(data_buf+5));
-			fly_controller.pid.pi_o = ((u16)(*(data_buf+6)<<8)|*(data_buf+7));
-			fly_controller.pid.pd_o= ((u16)(*(data_buf+8)<<8)|*(data_buf+9));
-			fly_controller.pid.pp_i = ((u16)(*(data_buf+10)<<8)|*(data_buf+11));
-			fly_controller.pid.pi_i =((u16)(*(data_buf+12)<<8)|*(data_buf+13));
-			fly_controller.pid.pd_i =((u16)(*(data_buf+14)<<8)|*(data_buf+15));
-		
-		  fly_controller.pid.rp_o = ((u16)(*(data_buf+4)<<8)|*(data_buf+5));
-			fly_controller.pid.ri_o = ((u16)(*(data_buf+6)<<8)|*(data_buf+7));
-			fly_controller.pid.rd_o= ((u16)(*(data_buf+8)<<8)|*(data_buf+9));
-			fly_controller.pid.rp_i = ((u16)(*(data_buf+10)<<8)|*(data_buf+11));
-			fly_controller.pid.ri_i =((u16)(*(data_buf+12)<<8)|*(data_buf+13));
-			fly_controller.pid.rd_i =((u16)(*(data_buf+14)<<8)|*(data_buf+15));
-		
-		  fly_controller.pid.yp_o = ((u16)(*(data_buf+4)<<8)|*(data_buf+5));
-			fly_controller.pid.yi_o = ((u16)(*(data_buf+6)<<8)|*(data_buf+7));
-			fly_controller.pid.yd_o= ((u16)(*(data_buf+8)<<8)|*(data_buf+9));
-			fly_controller.pid.yp_i = ((u16)(*(data_buf+10)<<8)|*(data_buf+11));
-			fly_controller.pid.yi_i =((u16)(*(data_buf+12)<<8)|*(data_buf+13));
-			fly_controller.pid.yd_i =((u16)(*(data_buf+14)<<8)|*(data_buf+15));
-			
-			fly_controller.pid.hp_o = ((u16)(*(data_buf+4)<<8)|*(data_buf+5));
-			fly_controller.pid.hi_o = ((u16)(*(data_buf+6)<<8)|*(data_buf+7));
-			fly_controller.pid.hd_o= ((u16)(*(data_buf+8)<<8)|*(data_buf+9));
-			fly_controller.pid.hp_i = ((u16)(*(data_buf+10)<<8)|*(data_buf+11));
-			fly_controller.pid.hi_i =((u16)(*(data_buf+12)<<8)|*(data_buf+13));
-			fly_controller.pid.hd_i=((u16)(*(data_buf+14)<<8)|*(data_buf+15));
-		
 	}
 		else if(*(data_buf+2)==0x74)								//判断功能字0x82 PID参数
 	{
@@ -821,13 +726,9 @@ void USART1_IRQHandler(void)
 		{
 			USART1->CR1 &= ~USART_CR1_TXEIE;		//关闭TXE（发送中断）中断
 		}
-
-
-		//USART_ClearITPendingBit(USART2,USART_IT_TXE);
 	}
   
    OSIntExit(); 
-
 }
 
 
@@ -1230,10 +1131,7 @@ void Usart3_Init(u32 br_num)//-------SBUS
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
-  GPIO_Init(GPIOB, &GPIO_InitStructure); 
-	
-	
-	
+  GPIO_Init(GPIOB, &GPIO_InitStructure); 	
    //USART1 初始化设置
 	USART_InitStructure.USART_BaudRate = br_num;//波特率设置
 	USART_InitStructure.USART_WordLength = USART_WordLength_9b;//字长为8位数据格式
@@ -1317,7 +1215,3 @@ void USART3_IRQHandler(void)
    OSIntExit(); 
 
 }
-
-
-/******************* (C) COPYRIGHT 2014 ANO TECH *****END OF FILE************/
-

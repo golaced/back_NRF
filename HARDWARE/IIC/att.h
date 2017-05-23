@@ -3,10 +3,8 @@
 
 #include "stm32f4xx.h"
 #include "include.h"
-#include "pwm_out.h"
 #include "rc.h"
-#include "imu.h"
-#include "mpu6050.h"
+
 
 enum {
     PIDROLL,
@@ -36,25 +34,10 @@ typedef struct
 
 }ctrl_t;
 
-extern ctrl_t ctrl_1;
-extern ctrl_t ctrl_2;
-extern ctrl_t ctrl_2_fuzzy;
-void CTRL_2(float);
-void CTRL_2_FUZZY(float);
-
-void CTRL_1(float);
-void Ctrl_Para_Init(void);
-void Thr_Ctrl(float);
-void All_Out(float x,float y,float z);
 
 extern u8 Thr_Low;
 extern float Thr_Weight;
-extern float motor[MAXMOTORS];
-extern xyz_f_t ctrl_angle_offset;
-extern float thr_test;
 extern void GPS_calc_poshold(void);
-
-extern xyz_f_t except_A ;
 
 extern float actual_speed[2];
 extern float tar_speed[2];

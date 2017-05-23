@@ -638,9 +638,9 @@
               <FilePath>..\HARDWARE\IIC\m100.c</FilePath>
             </File>
             <File>
-              <FileName>sbus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\IIC\sbus.c</FilePath>
+              <FileName>sbus_oldx.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\HARDWARE\IIC\sbus_oldx.lib</FilePath>
             </File>
           </Files>
         </Group>

@@ -2,8 +2,7 @@
 
 #include "led_fc.h"
 #include "include.h"
-#include "mpu6050.h"
-#include "hml5833l.h"
+
 void LEDRGB_COLOR(u8 color);
 void LED_Init()
 {

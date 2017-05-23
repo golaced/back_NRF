@@ -235,70 +235,61 @@ void TIM2_Int_Init(u16 arr,u16 psc)
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);  ///使能TIM3时钟
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5,ENABLE);  ///使能TIM3时钟
 	
   TIM_TimeBaseInitStructure.TIM_Period = arr; 	//自动重装载值
 	TIM_TimeBaseInitStructure.TIM_Prescaler=psc;  //定时器分频
 	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up; //向上计数模式
 	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
 	
-	TIM_TimeBaseInit(TIM2,&TIM_TimeBaseInitStructure);//初始化TIM3
+	TIM_TimeBaseInit(TIM5,&TIM_TimeBaseInitStructure);//初始化TIM3
 	
-	TIM_ITConfig(TIM2,TIM_IT_Update,ENABLE); //允许定时器3更新中断
-	TIM_Cmd(TIM2,ENABLE); //使能定时器3
+	TIM_ITConfig(TIM5,TIM_IT_Update,ENABLE); //允许定时器3更新中断
+	TIM_Cmd(TIM5,ENABLE); //使能定时器3
 	
-	    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;            //TIM2中断
+	    NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;            //TIM2中断
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2 ;  //先占优先级0级
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;         //从优先级3级
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;            //IRQ通道被使能
     NVIC_Init(&NVIC_InitStructure);  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
 }
 
-
- void TIM2_IRQHandler(void)//2ms_intrupt
+float time5;
+ void TIM5_IRQHandler(void)//2ms_intrupt
 { static u8 flag_int=0,state,cnt;
 	static u16 ms8=0,ms40=0,ms6=0,ms_sd=0,ms1000;	//中断次数计数器
 	
-	if(TIM_GetITStatus(TIM2,TIM_IT_Update)==SET) //溢出中断
-	{		
-	TIM_ClearITPendingBit(TIM2,TIM_IT_Update);  //清除中断标志位
+	if(TIM_GetITStatus(TIM5,TIM_IT_Update)==SET) //溢出中断
+	{		time5 = Get_Cycle_T(15);		
+	TIM_ClearITPendingBit(TIM5,TIM_IT_Update);  //清除中断标志位
 		
-		 sd_check();
-			
-		switch (state)
-		{
-			case 0:
-				if(sd_insert==1&&sd_had_init==0)
-				{ power_sd(1);
-				
-					if(!SD_Init())
-					{state=1;
-					exfuns_init();							//为fatfs相关变量申请内存				 
-					SD_INIT();
-					sd_had_init=1;
-					}
-				}
-				if(sd_insert==0)
-				sd_had_init=0;
-
-			break;
-			case 1:
-				if(sd_insert==0){
-				sd_had_init=0;
-				state=0;
-				power_sd(0);	
-				}
 		
-			break;
-		}		 
-		sd.sd_insert=sd_insert;	
-		sd.init=sd_had_init;
-		en_save=sd.en_save&&sd_insert;
+		static u8 sel;
+//		switch(sel){
+//			case 0:Send_RC_TO_FC(0);
+//			sel=1;
+//		  break;
+//			case 1:Send_RC_TO_FC(1);
+//			sel=0;
+//		  break;
+//		}
 		
-		//if(cnt++>0){cnt=0;	
-		sd.task_detal = Get_Cycle_T(GET_T_SD);		
-		SD_Save_Task(sd.task_detal);	
-	
-	//TIM_ClearITPendingBit(TIM2,TIM_IT_Update);  //清除中断标志位
+						if(DMA_GetFlagStatus(DMA2_Stream7,DMA_FLAG_TCIF7)!=RESET)//等待DMA2_Steam7传输完成
+							{ 	
+						  DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);//清除DMA2_Steam7传输完成标志
+							clear_nrf_uart();
+							switch(sel){
+								case 0:;data_per_uart1_dma(SEND_NRF_RC_PPMSBUS);sel=1;	
+									break;
+								case 1: 
+									  sel=0;
+										data_per_uart1_dma(SEND_NRF_RC);
+								  break;
+							}
+							
+							USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);  //使能串口1的DMA发送     
+							MYDMA_Enable(DMA2_Stream7,nrf_uart_cnt+2);     //开始一次DMA传输！	  
+							}	
+							
 	}
 }

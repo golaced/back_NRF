@@ -1,15 +1,10 @@
 #include "include.h" 
-#include "iic_soft.h"
-#include "hml_sample.h"
-#include "ms5611.h"
-#include "alt_kf.h"
 #include "flash.h"
 #include "led_fc.h"
 #include "ucos_ii.h"
 #include "os_cpu.h"
 #include "os_cfg.h"
 #include "ucos_task.h"
-#include "pwm_in.h"
 #include "stm32f4xx_dma.h"
 #include "circle.h"
 #include "sd.h"
@@ -49,16 +44,16 @@ int main(void)
 	my_mem_init(SRAMIN);		//初始化内部内存池 
 	my_mem_init(SRAMCCM);		//初始化CCM内存池
 	Delay_ms(100);
-	sd_check();
-	if(sd_insert)
-	{
-       if(!SD_Init())
-				{
-				exfuns_init();							//为fatfs相关变量申请内存				 
-				SD_INIT();
-				sd_had_init=1;
-				}
-	}
+//	sd_check();
+//	if(sd_insert)
+//	{
+//       if(!SD_Init())
+//				{
+//				exfuns_init();							//为fatfs相关变量申请内存				 
+//				SD_INIT();
+//				sd_had_init=1;
+//				}
+//	}
 //------------------------Uart Init-------------------------------------
   Usart1_Init(576000L);			//NRF M100
 	#if EN_DMA_UART1 
@@ -153,7 +148,7 @@ int main(void)
 	RX_CH[AUX4r]=500;
   m100.Rc_gear=-4545;
 	m100.Rc_mode=-8000;
-  //TIM2_Int_Init(1000-1,84-1);	//定时器时钟84M，分频系数8400，所以84M/8400=10Khz的计数频率，计数5000次为500ms      TIM2_Config(
+  TIM2_Int_Init(20000-1,84-1);	//定时器时钟84M，分频系数8400，所以84M/8400=10Khz的计数频率，计数5000次为500ms      TIM2_Config(
 
 	//-----------------DMA Init--------------------------
 #if EN_DMA_UART2

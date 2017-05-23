@@ -24,5 +24,27 @@ void m100_vRc_off(u16 delay);
 void m100_contrl(float x,float y,float z,float yaw,u8 mode);
 void m100_data(u16 delay);
 void m100_rst(u16 delay);
+
+ typedef struct
+{
+ float Pit,Rol,Yaw;
+ float Lat,Lon;
+ float H,H_Spd;	
+ u8 GPS_STATUS;	//>3  5->Best
+/*
+Flight status val	status name
+1	standby
+2	take_off
+3	in_air
+4	landing
+5	finish_landing
+*/
+ u8 STATUS;
+ float Bat;	
+ int Rc_pit,Rc_rol,Rc_yaw,Rc_thr,Rc_mode,Rc_gear;
+
+}M100;
+extern M100 m100;
+
 #endif
 
