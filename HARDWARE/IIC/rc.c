@@ -1,5 +1,3 @@
-
-
 #include "include.h"
 #include "rc.h"
 #include "my_math.h"

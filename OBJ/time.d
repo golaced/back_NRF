@@ -63,5 +63,3 @@
 ..\obj\time.o: ..\HARDWARE\FATFS\src\ffconf.h
 ..\obj\time.o: ..\HARDWARE\FATFS\exfuns\exfuns.h
 ..\obj\time.o: ..\HARDWARE\IIC\math.h
-..\obj\time.o: ..\HARDWARE\IIC\sd.h
-..\obj\time.o: ..\HARDWARE\IIC\led_fc.h

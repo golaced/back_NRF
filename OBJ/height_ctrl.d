@@ -65,5 +65,3 @@
 ..\obj\height_ctrl.o: ..\HARDWARE\FATFS\src\ffconf.h
 ..\obj\height_ctrl.o: ..\HARDWARE\FATFS\exfuns\exfuns.h
 ..\obj\height_ctrl.o: ..\HARDWARE\IIC\math.h
-..\obj\height_ctrl.o: ..\HARDWARE\IIC\circle.h
-..\obj\height_ctrl.o: ..\HARDWARE\IIC\gps.h

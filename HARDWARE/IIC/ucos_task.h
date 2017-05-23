@@ -68,7 +68,7 @@ void baro_task(void *pdata);
 
 //-----------------------SONAR线程
 //设置任务堆栈大小
-#define SONAR_STK_SIZE  					64*10
+#define SONAR_STK_SIZE  					64*3
 //任务堆栈	
 extern OS_STK SONAR_TASK_STK[SONAR_STK_SIZE];
 //任务函数

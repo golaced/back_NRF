@@ -64,4 +64,3 @@
 ..\obj\sd.o: ..\HARDWARE\FATFS\exfuns\exfuns.h
 ..\obj\sd.o: ..\HARDWARE\IIC\math.h
 ..\obj\sd.o: ..\HARDWARE\IIC\sd.h
-..\obj\sd.o: ..\HARDWARE\IIC\led_fc.h

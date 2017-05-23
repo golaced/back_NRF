@@ -1,6 +1,3 @@
 #include "height_ctrl.h"
 #include "my_math.h"
 #include "filter.h"
-#include "att.h"
-#include "rc.h"
-#include  "circle.h"

@@ -108,8 +108,8 @@ uint32_t micros(void)
 
 
 
-extern u8  TIM5CH1_CAPTURE_STA;		//输入捕获状态		    				
-extern u16	TIM5CH1_CAPTURE_VAL;	//输入捕获值	
+extern u8  TIM3CH1_CAPTURE_STA;		//输入捕获状态		    				
+extern u16	TIM3CH1_CAPTURE_VAL;	//输入捕获值	
 extern u16 ppm_rx[];
 
 TIM_ICInitTypeDef  TIM3_ICInitStructure;
@@ -164,73 +164,69 @@ void TIM3_Cap_Init(u16 arr,u16 psc)
 }
 
 u32 temp=0;
-u8  TIM5CH1_CAPTURE_STA=0,ppm_rx_sta=0,ppm_rx_num=0;	//输入捕获状态		    				
-u16	TIM5CH1_CAPTURE_VAL;	//输入捕获值
+u8  TIM3CH1_CAPTURE_STA=0,ppm_rx_sta=0,ppm_rx_num=0;	//输入捕获状态		    				
+u16	TIM3CH1_CAPTURE_VAL;	//输入捕获值
 u16 ppm_rx[10];//ppm_rx[0]   1   接收到ppm数据
 //定时器5中断服务程序	 
 void TIM3_IRQHandler(void)
 { 
 
- 	if((TIM5CH1_CAPTURE_STA&0X80)==0)//还未成功捕获	
+ 	if((TIM3CH1_CAPTURE_STA&0X80)==0)//还未成功捕获	
 	{	  
 		if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
 		 
 		{	    
-			if(TIM5CH1_CAPTURE_STA&0X40)//已经捕获到高电平了
+			if(TIM3CH1_CAPTURE_STA&0X40)//已经捕获到高电平了
 			{
-				if((TIM5CH1_CAPTURE_STA&0X3F)==0X3F)//高电平太长了
+				if((TIM3CH1_CAPTURE_STA&0X3F)==0X3F)//高电平太长了
 				{
-					TIM5CH1_CAPTURE_STA|=0X80;//标记成功捕获了一次
-					TIM5CH1_CAPTURE_VAL=0XFFFF;
-				}else TIM5CH1_CAPTURE_STA++;
+					TIM3CH1_CAPTURE_STA|=0X80;//标记成功捕获了一次
+					TIM3CH1_CAPTURE_VAL=0XFFFF;
+				}else TIM3CH1_CAPTURE_STA++;
 			}	 
 		}
 	if (TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET)//捕获1发生捕获事件
 		{	
-			if(TIM5CH1_CAPTURE_STA&0X40)		//捕获到一个下降沿 		
+			if(TIM3CH1_CAPTURE_STA&0X40)		//捕获到一个下降沿 		
 			{	  			
-				TIM5CH1_CAPTURE_STA|=0X80;		//标记成功捕获到一次高电平脉宽
-				TIM5CH1_CAPTURE_VAL=TIM_GetCapture1(TIM3);
+				TIM3CH1_CAPTURE_STA|=0X80;		//标记成功捕获到一次高电平脉宽
+				TIM3CH1_CAPTURE_VAL=TIM_GetCapture1(TIM3);
 		   		TIM_OC1PolarityConfig(TIM3,TIM_ICPolarity_Rising); //CC1P=0 设置为上升沿捕获
 			}else  								//还未开始,第一次捕获上升沿
 			{
-				TIM5CH1_CAPTURE_STA=0;			//清空
-				TIM5CH1_CAPTURE_VAL=0;
+				TIM3CH1_CAPTURE_STA=0;			//清空
+				TIM3CH1_CAPTURE_VAL=0;
 	 			TIM_SetCounter(TIM3,0);
-				TIM5CH1_CAPTURE_STA|=0X40;		//标记捕获到了上升沿
+				TIM3CH1_CAPTURE_STA|=0X40;		//标记捕获到了上升沿
 		   		TIM_OC1PolarityConfig(TIM3,TIM_ICPolarity_Falling);		//CC1P=1 设置为下降沿捕获
 			}		    
 		}			     	    					   
  	}
 	
 	//处理帧数据
-		if(TIM5CH1_CAPTURE_STA&0X80)//成功捕获到了一次上升沿
+		if(TIM3CH1_CAPTURE_STA&0X80)//成功捕获到了一次上升沿
 		{
 		
 			if(ppm_rx_sta==1) {
 				if((ppm_rx[3]>1019+2||ppm_rx[3]<1019-2)&&ppm_rx[3]>1000){
 				Rc_Get_PPM.update=1;Rc_Get_PPM.lose_cnt=0;
 				}
-				if(TIM5CH1_CAPTURE_VAL+400>0&&TIM5CH1_CAPTURE_VAL+400<2000){
-			ppm_rx[ppm_rx_num+1]=TIM5CH1_CAPTURE_VAL+400;ppm_rx_num++;}
-			}//printf("TIM5CH1_CAPTURE_VAL:%d\r\n",TIM5CH1_CAPTURE_VAL);
-			if(4>TIM5CH1_CAPTURE_STA&0X3F>0||TIM5CH1_CAPTURE_VAL>3000) ppm_rx_sta++;//低电平时间大于3000us为起始帧
+				if(TIM3CH1_CAPTURE_VAL+400>0&&TIM3CH1_CAPTURE_VAL+400<2000){
+			ppm_rx[ppm_rx_num+1]=TIM3CH1_CAPTURE_VAL+400;ppm_rx_num++;}
+			}//printf("TIM3CH1_CAPTURE_VAL:%d\r\n",TIM3CH1_CAPTURE_VAL);
+			if(4>TIM3CH1_CAPTURE_STA&0X3F>0||TIM3CH1_CAPTURE_VAL>3000) ppm_rx_sta++;//低电平时间大于3000us为起始帧
 			if(ppm_rx_sta==2) {ppm_rx_sta=0;ppm_rx[0]=1;ppm_rx_num=0;}//printf("receive\r\n");//ppm_rx_sta   1 表示接收到同步帧/ 2接收到到下一起始帧 ppm数据接收完毕
 			
-			TIM5CH1_CAPTURE_STA=0;//开启下一次捕获
+			TIM3CH1_CAPTURE_STA=0;//开启下一次捕获
 			
 		}
-			
-			
-		
-		
+				
     TIM_ClearITPendingBit(TIM3, TIM_IT_CC1|TIM_IT_Update); //清除中断标志位
  
 }
 
-#include "sd.h"
-#include "led_fc.h"
-void TIM2_Int_Init(u16 arr,u16 psc)
+
+void TIM5_Int_Init(u16 arr,u16 psc)
 { GPIO_InitTypeDef GPIO_InitStructure;
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -258,13 +254,13 @@ float time5;
  void TIM5_IRQHandler(void)//2ms_intrupt
 { static u8 flag_int=0,state,cnt;
 	static u16 ms8=0,ms40=0,ms6=0,ms_sd=0,ms1000;	//中断次数计数器
-	
+	static u8 sel;
 	if(TIM_GetITStatus(TIM5,TIM_IT_Update)==SET) //溢出中断
 	{		time5 = Get_Cycle_T(15);		
 	TIM_ClearITPendingBit(TIM5,TIM_IT_Update);  //清除中断标志位
 		
 		
-		static u8 sel;
+		
 //		switch(sel){
 //			case 0:Send_RC_TO_FC(0);
 //			sel=1;

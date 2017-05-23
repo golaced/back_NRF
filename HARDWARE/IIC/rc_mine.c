@@ -33,44 +33,6 @@ u8 key_rc[6]={1,1,1,1,1,1};
 u16 Yaw_sb_rc=0;
 
 u8 cnt_rst=0,delta_pitch=0,delta_roll=0,delta_yew=0;
-
-
-
-//中值滤波
-float GetMedianNum(float * bArray, u16 iFilterLen)
-{  
-    int i,j;// 循环变量  
-    float bTemp;  
-      
-    // 用冒泡法对数组进行排序  
-    for (j = 0; j < iFilterLen - 1; j ++)  
-    {  
-        for (i = 0; i < iFilterLen - j - 1; i ++)  
-        {  
-            if (bArray[i] > bArray[i + 1])  
-            {  
-                // 互换  
-                bTemp = bArray[i];  
-                bArray[i] = bArray[i + 1];  
-                bArray[i + 1] = bTemp;  
-            }  
-        }  
-    }  
-      
-    // 计算中值  
-    if ((iFilterLen & 1) > 0)  
-    {  
-        // 数组有奇数个元素，返回中间一个元素  
-        bTemp = bArray[(iFilterLen + 1) / 2];  
-    }  
-    else  
-    {  
-        // 数组有偶数个元素，返回中间两个元素平均值  
-        bTemp = (bArray[iFilterLen / 2] + bArray[iFilterLen / 2 + 1]) / 2;  
-    }  
-  
-    return bTemp;  
-}  
 u16 data_rate;
 #define MID_RC_KEY 15
 uint8_t NRF24L01_RXDATA_REG[32];//nrf24l01接收到的数据

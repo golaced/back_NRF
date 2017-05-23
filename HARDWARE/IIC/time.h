@@ -36,10 +36,10 @@ uint32_t micros(void);
 #define GET_T_SD 5
 #define GET_T_M100 6
 
-extern u8  TIM5CH1_CAPTURE_STA;		//输入捕获状态		    				
-extern u16	TIM5CH1_CAPTURE_VAL;	//输入捕获值	
+extern u8  TIM3CH1_CAPTURE_STA;		//输入捕获状态		    				
+extern u16	TIM3CH1_CAPTURE_VAL;	//输入捕获值	
 extern u16 ppm_rx[];
 
 void TIM3_Cap_Init(u16 arr,u16 psc);
-void TIM2_Int_Init(u16 arr,u16 psc);
+void TIM5_Int_Init(u16 arr,u16 psc);
 #endif
