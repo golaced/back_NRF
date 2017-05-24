@@ -294,6 +294,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>save_rc</ItemText>
         </Ww>
+        <Ww>
+          <count>17</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>m100_update_time</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

@@ -1134,7 +1134,7 @@ void Usart3_Init(u32 br_num)//-------SBUS
   GPIO_Init(GPIOB, &GPIO_InitStructure); 	
    //USART1 初始化设置
 	USART_InitStructure.USART_BaudRate = br_num;//波特率设置
-	USART_InitStructure.USART_WordLength = USART_WordLength_9b;//字长为8位数据格式
+	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//字长为8位数据格式
 	USART_InitStructure.USART_StopBits = USART_StopBits_2;//一个停止位
 	USART_InitStructure.USART_Parity = USART_Parity_Even;//无奇偶校验位
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制
