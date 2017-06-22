@@ -49,11 +49,11 @@
 "..\obj\my_math.o"
 "..\obj\sd.o"
 "..\obj\malloc.o"
-"..\obj\ff.o"
 "..\obj\diskio.o"
 "..\obj\cc936.o"
 "..\obj\sdio.o"
 "..\obj\exfuns.o"
+"..\obj\ff.o"
 --strict --scatter "..\OBJ\UCOSII-3.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

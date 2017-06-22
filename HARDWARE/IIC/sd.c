@@ -25,17 +25,6 @@ void SD_INIT(void)
 }
 
 
-void Uart_zero_fix(char* buf ,u32 num)
-{u32 i;
-	for(i=0;i<num-1;i++)
-			{
-			 if(buf[i]==0x0)
-				   buf[i]=' ';
-		 }
-
-}	
-
-
 char* my_itoa(int value,char *str,int radix)
 {
 	int sign = 0;

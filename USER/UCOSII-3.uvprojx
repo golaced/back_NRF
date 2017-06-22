@@ -693,11 +693,6 @@
               <FilePath>..\HARDWARE\FATFS\src\malloc.c</FilePath>
             </File>
             <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\FATFS\src\ff.c</FilePath>
-            </File>
-            <File>
               <FileName>diskio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\FATFS\src\diskio.c</FilePath>
@@ -716,6 +711,11 @@
               <FileName>exfuns.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\FATFS\exfuns\exfuns.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\FATFS\src\ff.c</FilePath>
             </File>
           </Files>
         </Group>
