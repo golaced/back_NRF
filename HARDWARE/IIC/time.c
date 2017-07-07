@@ -270,22 +270,22 @@ float time5;
 //		  break;
 //		}
 		
-						if(DMA_GetFlagStatus(DMA2_Stream7,DMA_FLAG_TCIF7)!=RESET)//等待DMA2_Steam7传输完成
-							{ 	
-						  DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);//清除DMA2_Steam7传输完成标志
-							clear_nrf_uart();
-							switch(sel){
-								case 0:;data_per_uart1_dma(SEND_NRF_RC_PPMSBUS);sel=1;	
-									break;
-								case 1: 
-									  sel=0;
-										data_per_uart1_dma(SEND_NRF_RC);
-								  break;
-							}
-							
-							USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);  //使能串口1的DMA发送     
-							MYDMA_Enable(DMA2_Stream7,nrf_uart_cnt+2);     //开始一次DMA传输！	  
-							}	
+//						if(DMA_GetFlagStatus(DMA2_Stream7,DMA_FLAG_TCIF7)!=RESET)//等待DMA2_Steam7传输完成
+//							{ 	
+//						  DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);//清除DMA2_Steam7传输完成标志
+//							clear_nrf_uart();
+//							switch(sel){
+//								case 0:;data_per_uart1_dma(SEND_NRF_RC_PPMSBUS);sel=1;	
+//									break;
+//								case 1: 
+//									  sel=0;
+//										data_per_uart1_dma(SEND_NRF_RC);
+//								  break;
+//							}
+//							
+//							USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);  //使能串口1的DMA发送     
+//							MYDMA_Enable(DMA2_Stream7,nrf_uart_cnt+2);     //开始一次DMA传输！	  
+//							}	
 							
 	}
 }

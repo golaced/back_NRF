@@ -47,12 +47,38 @@ OS_STK OUTER_TASK_STK[OUTER_STK_SIZE];
 float outer_loop_time;
 float Pitch_R,Roll_R,Yaw_R;
 void outer_task(void *pdata)
-{	static u8 cnt,cnt1,cnt2;						  
+{	static u8 cnt,cnt1,cnt2,sel;						  
  	while(1)
 	{	
 	outer_loop_time = Get_Cycle_T(GET_T_OUTTER);								//获取外环准确的执行周期
-	
-	delay_ms(5);
+		
+		
+//		switch(sel){
+//			case 0:Send_RC_TO_FC(0);
+//			sel=1;
+//		  break;
+//			case 1:Send_RC_TO_FC(1);
+//			sel=0;
+//		  break;
+//		}
+			if(DMA_GetFlagStatus(DMA2_Stream7,DMA_FLAG_TCIF7)!=RESET)//等待DMA2_Steam7传输完成
+							{ 	
+						  DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);//清除DMA2_Steam7传输完成标志
+							clear_nrf_uart();
+							switch(sel){
+								case 0:
+									  data_per_uart1_dma(SEND_NRF_RC_PPMSBUS);sel=1;	
+									break;
+								case 1: 
+									  sel=0;
+										data_per_uart1_dma(SEND_NRF_RC);
+								  break;
+							}
+							
+							USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);  //使能串口1的DMA发送     
+							MYDMA_Enable(DMA2_Stream7,nrf_uart_cnt+2);     //开始一次DMA传输！	  
+							}	
+	delay_ms(10);
 	}
 }		
 //=========================射频 任务函数======================

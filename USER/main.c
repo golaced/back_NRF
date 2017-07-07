@@ -44,7 +44,7 @@ int main(void)
 	my_mem_init(SRAMCCM);		//初始化CCM内存池
 	Delay_ms(100);
 //------------------------Uart Init-------------------------------------
-  Usart1_Init(576000L);			//NRF M100
+  Usart1_Init(256000L);			//NRF M100
 	#if EN_DMA_UART1 
 	MYDMA_Config(DMA2_Stream7,DMA_Channel_4,(u32)&USART1->DR,(u32)SendBuff1,SEND_BUF_SIZE1+2,1);//DMA2,STEAM7,CH4,外设为串口1,存储器为SendBuff,长度为:SEND_BUF_SIZE.
 	#endif

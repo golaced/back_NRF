@@ -731,7 +731,7 @@ void USART1_IRQHandler(void)
    OSIntExit(); 
 }
 
-
+u8 heart_beat;
 void Send_RC_TO_FC(u8 sel)
 {u8 i;	u8 sum = 0;
 	u8 data_to_send[50];
@@ -799,6 +799,8 @@ void Send_RC_TO_FC(u8 sel)
 	_temp=2;
 	else
 	_temp=0;
+	data_to_send[_cnt++]=BYTE0(_temp);
+	_temp=heart_beat++;
 	data_to_send[_cnt++]=BYTE0(_temp);
 	
 	data_to_send[3] = _cnt-4;
@@ -1077,7 +1079,8 @@ switch(sel){
 	else
 	_temp=0;
 	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
-	
+	_temp=heart_beat++;
+	SendBuff1[nrf_uart_cnt++]=BYTE0(_temp);
 	SendBuff1[cnt_reg+3] =(nrf_uart_cnt-cnt_reg)-4;
 		for( i=cnt_reg;i<nrf_uart_cnt;i++)
 	sum += SendBuff1[i];
