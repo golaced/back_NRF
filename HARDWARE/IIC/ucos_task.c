@@ -226,10 +226,11 @@ OS_STK  UART_TASK_STK[UART_STK_SIZE];
 u8 UART_UP_LOAD_SEL=4;//<------------------------------UART UPLOAD DATA SEL
 u8 state_v_test=0;
 u8 num_need_to_check;
-u8 save_rc;
+u8 save_rc,cal_rc;
 void uart_task(void *pdata)
 {	static u8 cnt[4],state,sd_save_reg;	
   static u8 sd_sel;	
+	static u16	SBUS_RC[3] = { 1500 , 1500 , 1500 }, SBUS_AUX[3] = { 1500 , 1500 , 1500 }, SBUS_Sum;
 	u16 temp;
  	while(1)
 	{		
@@ -237,6 +238,37 @@ void uart_task(void *pdata)
 		{save_rc=0;
 			WRITE_PARM();
 		}
+		
+		switch(SBUS_Sum){
+		case 0:	
+	    if(cal_rc==1){
+				SBUS_RC[0]=SBUS_RC[1]=SBUS_RC[2]=SBUS_AUX[0]=SBUS_AUX[1]=SBUS_AUX[2]=1500;
+				 SBUS_Sum=1;}
+			break;
+		case 1:	
+		SBUS_RC[1]=channels[0];
+		SBUS_AUX[1]=channels[0];
+		SBUS_Sum=2;
+    break;
+    case 2:		
+    SBUS_RC[2] = MAX(channels[0],SBUS_RC[2]);
+	 	SBUS_RC[0] = MIN(channels[0],SBUS_RC[0]);			
+		SBUS_AUX[2] = MAX(channels[0],SBUS_AUX[2]);
+		SBUS_AUX[0] = MIN(channels[0],SBUS_AUX[0]);
+		if(cal_rc==0)
+		SBUS_Sum=3;
+		break;
+		case 3:
+		SBUS_MAX_A=SBUS_AUX[2];
+		SBUS_MIN_A=SBUS_AUX[0];
+		SBUS_MID_A=SBUS_AUX[1];
+		SBUS_MAX=SBUS_RC[2];
+		SBUS_MIN=SBUS_RC[0];
+		SBUS_MID=SBUS_RC[1];
+		save_rc=1;
+		break;
+		}
+		
 		temp=(Moving_Median(20,5,channels[0])-SBUS_MID)*500/((SBUS_MAX-SBUS_MIN)/2)+1500;
 		if(temp>900&&temp<2100)
 		Rc_Get_SBUS.ROLL=		 temp;

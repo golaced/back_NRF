@@ -188,6 +188,8 @@ switch(state_set_point)
 }
 else if(sd.en_save)
 LEDRGB_COLOR(WHITE); 	
+else if(cal_rc)
+LEDRGB_COLOR(GREEN); 
 else {
 main_state=0;
 switch(idle_state)

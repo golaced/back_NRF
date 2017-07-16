@@ -216,7 +216,8 @@ typedef signed   int   int32;                   /* defined for signed 32-bits in
 typedef float          fp32;                    /* single precision floating point variable (32bits) 单精度浮点数（32位长度） */
 typedef double         fp64;                    /* double precision floating point variable (64bits) 双精度浮点数（64位长度） */
 
-
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 //zhong hang
 extern float PWM_DJ[4],target_position_task_s[2],target_position_task_e[2],yaw_ctrl_out,Yaw_set_dji,T_SHOOT_CHECK,AVOID[2],exp_height_check,exp_height_head_scan,exp_height_head_shoot;

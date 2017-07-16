@@ -463,5 +463,7 @@ void clear_nrf_uart(void);
 extern u16 nrf_uart_cnt;					
 extern float mark[10][4];						
 extern float sd_save[100];
-void Send_RC_TO_FC(u8 sel);						
+void Send_RC_TO_FC(u8 sel);					
+
+extern u8 cal_rc;						
 #endif
