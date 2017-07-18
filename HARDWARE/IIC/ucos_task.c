@@ -226,7 +226,7 @@ OS_STK  UART_TASK_STK[UART_STK_SIZE];
 u8 UART_UP_LOAD_SEL=4;//<------------------------------UART UPLOAD DATA SEL
 u8 state_v_test=0;
 u8 num_need_to_check;
-u8 save_rc,cal_rc;
+u8 save_rc,cal_rc,mems_state,gps_state;
 void uart_task(void *pdata)
 {	static u8 cnt[4],state,sd_save_reg;	
   static u8 sd_sel;	
@@ -246,15 +246,21 @@ void uart_task(void *pdata)
 				 SBUS_Sum=1;}
 			break;
 		case 1:	
+		if(SBUS_RC[1]<1700&&SBUS_RC[1]>1300)	
 		SBUS_RC[1]=channels[0];
-		SBUS_AUX[1]=channels[0];
+		else
+		SBUS_RC[1]=1524;	
+		if(SBUS_AUX[1]<1700&&SBUS_AUX[1]>1300)	
+		SBUS_AUX[1]=channels[6];
+		else
+		SBUS_AUX[1]=1524;	
 		SBUS_Sum=2;
     break;
     case 2:		
     SBUS_RC[2] = MAX(channels[0],SBUS_RC[2]);
 	 	SBUS_RC[0] = MIN(channels[0],SBUS_RC[0]);			
-		SBUS_AUX[2] = MAX(channels[0],SBUS_AUX[2]);
-		SBUS_AUX[0] = MIN(channels[0],SBUS_AUX[0]);
+		SBUS_AUX[2] = MAX(channels[6],SBUS_AUX[2]);
+		SBUS_AUX[0] = MIN(channels[6],SBUS_AUX[0]);
 		if(cal_rc==0)
 		SBUS_Sum=3;
 		break;
@@ -265,7 +271,9 @@ void uart_task(void *pdata)
 		SBUS_MAX=SBUS_RC[2];
 		SBUS_MIN=SBUS_RC[0];
 		SBUS_MID=SBUS_RC[1];
+		if(abs(SBUS_MAX_A-SBUS_MIN_A)>500&&abs(SBUS_MAX-SBUS_MIN)>500)
 		save_rc=1;
+		SBUS_Sum=0;
 		break;
 		}
 		

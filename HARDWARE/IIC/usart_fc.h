@@ -465,5 +465,5 @@ extern float mark[10][4];
 extern float sd_save[100];
 void Send_RC_TO_FC(u8 sel);					
 
-extern u8 cal_rc;						
+extern u8 cal_rc,mems_state,gps_state;						
 #endif

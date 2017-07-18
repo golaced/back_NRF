@@ -634,7 +634,9 @@ int16_t BLE_DEBUG[16];
 			sd_save[i] =  (vs16)(temp1|temp2);
 		 }
 		 sd.en_save=*(data_buf+(cnt2++));
-		 cal_rc=*(data_buf+(cnt2++));
+ 		 cal_rc=*(data_buf+(cnt2++));
+		 mems_state=*(data_buf+(cnt2++));
+		 gps_state=*(data_buf+(cnt2++));
 	}
 		else if(*(data_buf+2)==0x61)								//qr_traj
 	{

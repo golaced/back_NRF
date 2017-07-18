@@ -187,7 +187,9 @@ switch(state_set_point)
 
 }
 else if(sd.en_save)
-LEDRGB_COLOR(WHITE); 	
+LEDRGB_COLOR(WHITE);
+else if(mems_state==31)
+LEDRGB_COLOR(BLUE); 	
 else if(cal_rc)
 LEDRGB_COLOR(GREEN); 
 else {
@@ -231,7 +233,7 @@ switch(idle_state)
 	break;
 	
 	case 5:
-	 if(m100.STATUS&&m100.GPS_STATUS>=3)
+	 if(m100.GPS_STATUS>=3||gps_state>=3)
 				LEDRGB_COLOR(WHITE); 
 		 else if(m100.STATUS)
 			  LEDRGB_COLOR(YELLOW);
