@@ -284,6 +284,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>sd,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>mems_state_imu,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

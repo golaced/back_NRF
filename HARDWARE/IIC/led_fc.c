@@ -190,6 +190,18 @@ else if(sd.en_save)
 LEDRGB_COLOR(WHITE);
 else if(mems_state==31)
 LEDRGB_COLOR(BLUE); 	
+else if(!mems_state_imu)
+{
+static u16 cnt;
+static u8 flag;
+if(cnt++>0.08/0.05)	{
+flag=!flag;cnt=0;
+}
+if(flag)
+LEDRGB_COLOR(YELLOW);
+else
+LEDRGB_COLOR(BLACK);	
+}	
 else if(cal_rc)
 LEDRGB_COLOR(GREEN); 
 else {

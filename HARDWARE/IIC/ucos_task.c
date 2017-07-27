@@ -226,7 +226,7 @@ OS_STK  UART_TASK_STK[UART_STK_SIZE];
 u8 UART_UP_LOAD_SEL=4;//<------------------------------UART UPLOAD DATA SEL
 u8 state_v_test=0;
 u8 num_need_to_check;
-u8 save_rc,cal_rc,mems_state,gps_state;
+u8 save_rc,cal_rc,mems_state,gps_state,mems_state_imu;
 void uart_task(void *pdata)
 {	static u8 cnt[4],state,sd_save_reg;	
   static u8 sd_sel;	
