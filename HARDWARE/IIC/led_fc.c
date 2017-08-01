@@ -245,9 +245,9 @@ switch(idle_state)
 	break;
 	
 	case 5:
-	 if(m100.GPS_STATUS>=3||gps_state>=6)
+	 if(m100.GPS_STATUS>=3&&gps_state>=7)
 				LEDRGB_COLOR(WHITE); 
-		 else if(m100.STATUS||gps_state>=4)
+		 else if(m100.STATUS>=2&&gps_state>=4)
 			  LEDRGB_COLOR(YELLOW);
 		 else
 				LEDRGB_COLOR(RED);
