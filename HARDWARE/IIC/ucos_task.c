@@ -366,6 +366,9 @@ static u8 cnt;
 		circle.connect=0;
 	if(mouse.lose_cnt++>2/0.05)
 		mouse.connect=0;
+	if(sd.loss_en++>0.68/0.05)
+		sd.en_save=0;
+	
 	
 	if(fabs(m100.Pit)>90||fabs(m100.Rol)>90)
 	{cnt_1=0;dji_rst_protect=1;}

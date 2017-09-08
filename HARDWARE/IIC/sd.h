@@ -6,7 +6,8 @@ extern u8 en_save,sdcard_force_out,sd_had_init;
 
 struct _SD{
 				u8 init,sd_insert;
-				u8 en_save,en_save_force;
+	      u16 loss_en;
+				u8 en_save,en_save_rx,en_save_force;
         u32 save_time;
         float task_detal;
           };

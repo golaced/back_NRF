@@ -227,9 +227,9 @@ switch(idle_state)
 	break;
 	
 	case 3:
-		if(Rc_Get_PPM.update&&Rc_Get.update)
+		if((Rc_Get_PPM.update||Rc_Get_SBUS.update)&&Rc_Get.update)
 				LEDRGB_COLOR(WHITE); 
-		 else if(Rc_Get.update)
+		 else if(Rc_Get_SBUS.update)
 				LEDRGB_COLOR(GREEN); 
 		 else if(Rc_Get_PPM.update)
 				LEDRGB_COLOR(BLUE); 
@@ -245,10 +245,10 @@ switch(idle_state)
 	break;
 	
 	case 5:
-	 if(m100.GPS_STATUS>=3&&gps_state>=7)
+	 if(m100.GPS_STATUS>=3&&gps_state>=8)
 				LEDRGB_COLOR(WHITE); 
-		 else if(m100.STATUS>=2&&gps_state>=4)
-			  LEDRGB_COLOR(YELLOW);
+		 else if(m100.STATUS>=2&&gps_state>=6)
+			  LEDRGB_COLOR(BLUE);
 		 else
 				LEDRGB_COLOR(RED);
 	if(cnt_idle++>0.1/0.05)

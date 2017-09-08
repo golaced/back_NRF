@@ -633,7 +633,9 @@ int16_t BLE_DEBUG[16];
 		  temp1=(*(data_buf+(cnt2++))<<8);temp2=*(data_buf+(cnt2++));
 			sd_save[i] =  (vs16)(temp1|temp2);
 		 }
-		 sd.en_save=*(data_buf+(cnt2++));
+		 sd.en_save_rx=*(data_buf+(cnt2++));
+		 if(sd.en_save_rx)
+		 {sd.loss_en=0;sd.en_save=1;}
  		 cal_rc=*(data_buf+(cnt2++));
 		 mems_state=*(data_buf+(cnt2++));
 		 gps_state=*(data_buf+(cnt2++));
